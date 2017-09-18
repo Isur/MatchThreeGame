@@ -153,14 +153,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bgGem.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Gem.h" />
     <ClInclude Include="MatchThree.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bgGem.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gem.cpp" />
     <ClCompile Include="MatchThree.cpp" />
     <ClCompile Include="Object.cpp" />
