@@ -298,11 +298,6 @@ int main()
 			{
 				window.close();
 			}
-			if (e.type == sf::Event::MouseMoved)
-			{
-				std::string temporary = "x: " + std::to_string(sf::Mouse::getPosition(window).x) + " y: " + std::to_string(sf::Mouse::getPosition(window).y);
-				gameOverText.setString(temporary);
-			}
 			if (e.type == sf::Event::MouseButtonPressed)
 			{
 				if (sf::Mouse::getPosition(window).x <= offset.x + tileSize*SIZE_X &&
@@ -324,7 +319,7 @@ int main()
 					{
 						for (j = 0; j < SIZE_Y; j++)
 						{
-							//gem[i][j]->setBgType(2);
+							bg_Gem[i][j]->setLevel(2);
 						}
 					}
 				}
