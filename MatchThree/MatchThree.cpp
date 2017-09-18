@@ -6,12 +6,8 @@
 #include "Gem.h"
 #include "bgGem.h"
 #include "Game.h"
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "Menu.h"
 #include "MatchThree.h"
-#include <string> 
-#include<Windows.h>
 #include "settings.h"
 
 int main()
@@ -20,8 +16,9 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(550, 700), "Match 3 Game", sf::Style::Close);
 	window.setFramerateLimit(60);
 	Game *game = new Game;
-	bool play = true;
-	game->prepareBoard();
+	Menu *menu = new Menu;
+	bool play = false;
+
 	while (window.isOpen())
 	{
 
@@ -34,13 +31,23 @@ int main()
 			}
 			if (play == true) 
 			{ 
-				game->events(e, window); 
+				play = game->events(e, window); 
+			}
+			else
+			{
+				play = menu->events(e, window);
+				if (play == true)
+					game->prepareBoard();
 			}
 		}
 		if (play == true)
 		{
 			play = game->gameEngine();
 			game->drawing(window);
+		}
+		else
+		{
+			menu->drawText(window);
 		}
 
 	}

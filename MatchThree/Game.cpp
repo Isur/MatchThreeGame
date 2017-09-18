@@ -100,7 +100,7 @@ bool Game::finishGame()
 	else game = true;
 	return game;
 }
-void Game::events(sf::Event e, sf::RenderWindow &window)
+bool Game::events(sf::Event e, sf::RenderWindow &window)
 {
 	if (e.type == sf::Event::MouseButtonPressed)
 		{
@@ -123,7 +123,12 @@ void Game::events(sf::Event e, sf::RenderWindow &window)
 			{
 				prepareBoard();
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
+				return false;
+			}
 		}
+	return true;
 }
 bool Game::gameEngine()
 {

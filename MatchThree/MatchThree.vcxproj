@@ -156,6 +156,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gem.h" />
     <ClInclude Include="MatchThree.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="stdafx.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gem.cpp" />
     <ClCompile Include="MatchThree.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
