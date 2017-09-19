@@ -17,7 +17,7 @@ Gem::Gem(bool movable, sf::Vector2f position, int type)
 	this->oldPosition = this->position;
 	this->alpha = 255;
 	this->sprite.setColor(sf::Color(255, 255, 255, this->alpha));
-
+	this->underBlock = false;
 
 }
 Gem::Gem()

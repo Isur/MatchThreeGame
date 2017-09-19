@@ -16,7 +16,7 @@ bgGem::bgGem(bool movable, sf::Vector2f position, int type)
 	this->sprite.setTexture(texture);
 	this->sprite.setTextureRect(sf::IntRect(this->level * 40, 0, 40, 40));
 	this->sprite.setPosition(this->position);
-	this->alpha = 100;
+	this->alpha = 150;
 	this->sprite.setColor(sf::Color(255, 255, 255, this->alpha));
 
 }

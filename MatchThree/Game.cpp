@@ -61,6 +61,8 @@ void Game::prepareBoard()
 			position.y = offset.y + j*TILESIZE;
 			bg_Gem[i][j] = new bgGem(true, position, 1);
 			gem[i][j] = new Gem(true, position, tempType);
+			if(j == 4)	fg_Gem[i][j] = new FgGem(true, 1, position, 2);
+			else fg_Gem[i][j] = new FgGem(true, 1, position, 0);
 		}
 	}
 	
@@ -84,6 +86,7 @@ void Game::drawing(sf::RenderWindow &window)
 		{
 			bg_Gem[i][j]->drawBgGem(window);
 			gem[i][j]->drawGem(window);
+			fg_Gem[i][j]->drawFgGem(window);
 		}
 	}
 	window.display();
@@ -134,18 +137,26 @@ bool Game::gameEngine()
 {
 	int points;
 	sftime -= clock.getElapsedTime();
-	if (clicked == 1 && game == true)
+	if (clicked == 1 && game == true && isMoving == false)
 	{
 		x0 = mousePosition.x / TILESIZE;
 		y0 = mousePosition.y / TILESIZE;
-		gem[x0][y0]->updateTextrue(true);
+		if (fg_Gem[x0][y0]->getLevel() > 0 || gem[x0][y0]->getType() == TYPES)
+		{
+			clicked = 0;
+		}
+		else 
+		{
+			gem[x0][y0]->updateTextrue(true);
+		}
 	}
-	else if (clicked == 2)
+	else if (clicked == 2 && isMoving == false)
 	{
 		start = true;
 		x1 = mousePosition.x / TILESIZE;
 		y1 = mousePosition.y / TILESIZE;
-		if (abs(x0 - x1) + abs(y0 - y1) == 1)
+
+		if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
 		{
 			swap(gem, x0, y0, x1, y1); 
 			if(match(gem, bg_Gem) == true)
@@ -249,9 +260,13 @@ bool Game::match(Gem *gem[][SIZE_Y], bgGem *bg_Gem[][SIZE_Y])
 			if (gem[i][j]->getMatch() > 0)
 			{
 				score += gem[i][j]->getValue();
-				if (bg_Gem[i][j]->getLevel() > 0 && start == true)
+				if (bg_Gem[i][j]->getLevel() > 0 && start == true && fg_Gem[i][j]->getLevel() == 0)
 				{
 					bg_Gem[i][j]->setLevel(bg_Gem[i][j]->getLevel() - 1);
+				}
+				if (fg_Gem[i][j]->getLevel() > 0 && start == true)
+				{
+					fg_Gem[i][j]->setLevel(fg_Gem[i][j]->getLevel() - 1);
 				}
 				gem[i][j]->setTypeNotSprite(TYPES);
 				gem[i][j]->decreaseMatch();
@@ -270,8 +285,9 @@ bool Game::deleteAnimation(Gem *gem[][SIZE_Y])
 	{
 		for (j = 0; j < SIZE_Y; j++)
 		{
-			if (gem[i][j]->getType() == TYPES)
+			if (gem[i][j]->getType() == TYPES && gem[i][j]->getUnderBlock() == false)
 			{
+				
 				if (gem[i][j]->getAlpha() > 50)
 				{
 					gem[i][j]->setAlpha(gem[i][j]->getAlpha() - 40);
@@ -294,7 +310,7 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 	{
 		for (j = 0; j < SIZE_Y; j++)
 		{
-			if (gem[i][j]->getType() == TYPES)
+			if (gem[i][j]->getType() == TYPES && gem[i][j]->getUnderBlock() == false)
 			{
 
 				if (j == 0)
@@ -304,8 +320,15 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 				}
 				else
 				{
-					gem[i][j]->setAlpha(255);
-					swap(gem, i, j, i, j - 1);
+					if (fg_Gem[i][j - 1]->getLevel() == 0)
+					{
+						gem[i][j]->setAlpha(255);
+						swap(gem, i, j, i, j - 1);
+					}
+					else
+					{
+						gem[i][j]->setUnderBlock(true);
+					}
 				}
 			}
 		}
@@ -315,9 +338,11 @@ void Game::checkMoves()
 {
 	if (checkPosibleMove(gem) == false)
 	{
+		printf("HALO NI MA RUCHU");
+		for(i = 0; i < SIZE_X; i++)
 		for (j = 0; j < SIZE_Y; j++)
 		{
-			if (gem[i][j]->getAlpha() > 10)
+			if (gem[i][j]->getAlpha() > 10 && gem[i][j]->getType() != TYPES)
 			{
 				gem[i][j]->setAlpha(gem[i][j]->getAlpha() - 10);
 				isMoving = true;
@@ -351,79 +376,49 @@ bool Game::checkPosibleMove(Gem *gem[][SIZE_Y])
 		for (j = 0; j < SIZE_Y; j++)
 		{
 			temp = gem[i][j]->getType();
-			/*	DOWN	*/if (j < SIZE_Y - 3)
+			if (fg_Gem[i][j]->getLevel() == 0 && temp != TYPES)
 			{
-				if (temp == gem[i][j + 1]->getType())
+				printf("\n");
+				/* DOWN */ 
+				if(j <= SIZE_Y-2)
+				if (fg_Gem[i][j + 1]->getLevel() == 0 && gem[i][j+1]->getType() != TYPES)
 				{
-					if (i == 0)
-					{
-						if (temp == gem[i][j + 3]->getType() || temp == gem[i + 1][j + 2]->getType()) return true;
-					}
-					else if (i == SIZE_X - 1)
-					{
-						if (temp == gem[i][j + 3]->getType() || temp == gem[i - 1][j + 2]->getType()) return true;
-					}
-					else
-					{
-						if (temp == gem[i][j + 3]->getType() || temp == gem[i - 1][j + 2]->getType() || temp == gem[i + 1][j + 2]->getType()) return true;
-					}
-				}
-			}
-			/*	UP		*/if (j > 2)
-			{
-				if (temp == gem[i][j - 1]->getType())
-				{
-					if (i == 0)
-					{
-						if (temp == gem[i][j - 3]->getType() || temp == gem[i + 1][j - 2]->getType()) return true;
-					}
-					else if (i == SIZE_X - 1)
-					{
-						if (temp == gem[i][j - 3]->getType() || temp == gem[i - 1][j - 2]->getType()) return true;
-					}
-					else
-					{
-						if (temp == gem[i][j - 3]->getType() || temp == gem[i - 1][j - 2]->getType() || temp == gem[i + 1][j - 2]->getType()) return true;
-					}
+					if (j <= SIZE_Y - 4) { if (temp == gem[i][j + 2]->getType() && temp == gem[i][j + 3]->getType()){printf("DOWN DOWN[%i][%i]",i,j);return true;}	}
+					if (i >= 2) { if (temp == gem[i - 1][j + 1]->getType() && temp == gem[i - 2][j + 1]->getType()) { printf("DOWN LEFT[%i][%i]", i, j); return true; } }
+					if (i <= SIZE_X - 3) { if (temp == gem[i + 1][j + 1]->getType() && temp == gem[i + 2][j + 1]->getType()) { printf("DOWN RIGHT[%i][%i]", i, j); return true; } }
+					if (i >= 1 && i <= SIZE_X - 2) { if (temp == gem[i + 1][j + 1]->getType() && temp == gem[i - 1][j + 1]->getType()) { printf("DOWN MID[%i][%i]", i, j); return true; } }
 				}
 
-			}
-			/*	RIGHT	*/if (i < SIZE_X - 3)
-			{
-				if (temp == gem[i + 1][j]->getType())
+				/* UP */
+				if(j >= 1)
+				if (fg_Gem[i][j - 1]->getLevel() == 0 && gem[i][j - 1]->getType() != TYPES)
 				{
-					if (j == 0)
-					{
-						if (temp == gem[i + 3][j]->getType() || temp == gem[i + 2][j + 1]->getType()) return true;
-					}
-					else if (j == SIZE_Y - 1)
-					{
-						if (temp == gem[i + 3][j]->getType() || temp == gem[i + 2][j - 1]->getType()) return true;
-					}
-					else
-					{
-						if (temp == gem[i + 3][j]->getType() || temp == gem[i + 2][j - 1]->getType() || temp == gem[i + 2][j + 1]->getType()) return true;
-					}
+					if (j >= 3) { if (temp == gem[i][j - 2]->getType() && temp == gem[i][j - 3]->getType()) { printf("UP UP[%i][%i]", i, j); return true; } }
+					if (i >= 2) { if (temp == gem[i - 1][j - 1]->getType() && temp == gem[i - 2][j - 1]->getType()) { printf("UP LEFT[%i][%i]", i, j); return true; } }
+					if (i <= SIZE_X - 3) { if (temp == gem[i + 1][j - 1]->getType() && temp == gem[i + 2][j - 1]->getType()) { printf("UP RIGHT[%i][%i]", i, j); return true; } }
+					if (i >= 1 && i <= SIZE_X - 2) { if (temp == gem[i + 1][j - 1]->getType() && temp == gem[i - 1][j - 1]->getType()) { printf("UP MID[%i][%i]", i, j); return true; } }
 				}
-			}
-			/*	LEFT	*/if (i > 2)
-			{
-				if (temp == gem[i - 1][j]->getType())
+
+				/* RIGHT */
+				if(i <= SIZE_X - 2)
+				if (fg_Gem[i + 1][j]->getLevel() == 0 && gem[i + 1][j]->getType() != TYPES)
 				{
-					if (j == 0)
-					{
-						if (temp == gem[i - 3][j]->getType() || temp == gem[i - 2][j + 1]->getType()) return true;
-					}
-					else if (j == SIZE_Y - 1)
-					{
-						if (temp == gem[i - 3][j]->getType() || temp == gem[i - 2][j - 1]->getType()) return true;
-					}
-					else
-					{
-						if (temp == gem[i - 3][j]->getType() || temp == gem[i - 2][j + 1]->getType() || temp == gem[i - 2][j - 1]->getType()) return true;
-					}
+					if (i <= SIZE_X - 4) { if (temp == gem[i + 2][j]->getType() && temp == gem[i + 3][j]->getType()) { printf("RIGHT RIGHT[%i][%i]", i, j); return true; } }
+					if (j <= SIZE_Y - 3) { if (temp == gem[i + 1][j + 1]->getType() && temp == gem[i + 1][j + 2]->getType()) { printf("RIGHT DOWN[%i][%i]", i, j); return true; } }
+					if (j >= 2) { if (temp == gem[i + 1][j - 1]->getType() && temp == gem[i + 1][j - 2]->getType()) { printf("RIGHT UP[%i][%i]", i, j); return true; } }
+					if (j >= 1 && j <= SIZE_Y - 2) { if (temp == gem[i + 1][j + 1]->getType() && temp == gem[i + 1][j - 1]->getType()) { printf("RIGHT MID[%i][%i]", i, j); return true; } }
 				}
-			}
+				/* LEFT */	
+				if(i >= 1)
+				if (fg_Gem[i - 1][j]->getLevel() == 0 && gem[i - 1][j]->getType() != TYPES)
+				{
+					if (i >= 3) { if (temp == gem[i - 2][j]->getType() && temp == gem[i - 3][j]->getType()) { printf("LEFT LEFT[%i][%i]", i, j); return true; } }
+					if (j <= SIZE_Y - 3) { if (temp == gem[i - 1][j + 1]->getType() && temp == gem[i - 1][j + 2]->getType()) { printf("LEFT DONW[%i][%i]", i, j); return true; } }
+					if (j >= 2) { if (temp == gem[i - 1][j - 1]->getType() && temp == gem[i - 1][j - 2]->getType()) { printf("LEFT UP[%i][%i]", i, j); return true; } }
+					if (j >= 1 && j <= SIZE_Y - 2) { if (temp == gem[i - 1][j + 1]->getType() && temp == gem[i - 1][j - 1]->getType()) { printf("LEFT MID[%i][%i]", i, j); return true; } }
+				}
+			} 
+			
 		}
 	}
 	return false;

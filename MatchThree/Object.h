@@ -5,6 +5,7 @@ class Object
 protected:
 	bool movable;
 	int alpha;
+	bool checked;
 	sf::Vector2f position;
 	sf::Vector2f oldPosition;
 

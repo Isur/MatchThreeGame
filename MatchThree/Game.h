@@ -3,6 +3,7 @@
 #include "Gem.h"
 #include "bgGem.h"
 #include "settings.h"
+#include "FgGem.h"
 class Game
 {
 private:
@@ -25,6 +26,8 @@ private:
 	sf::Text gameOverInfoText;
 	Gem *gem[SIZE_X][SIZE_Y];
 	bgGem *bg_Gem[SIZE_X][SIZE_Y];
+	FgGem *fg_Gem[SIZE_X][SIZE_Y];
+
 	sf::Vector2i offset;
 	sf::Vector2i mousePosition;
 
