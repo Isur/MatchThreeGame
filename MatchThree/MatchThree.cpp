@@ -7,6 +7,7 @@
 #include "bgGem.h"
 #include "Game.h"
 #include "Menu.h"
+#include "Score.h"
 #include "MatchThree.h"
 #include "settings.h"
 
@@ -17,11 +18,12 @@ int main()
 	window.setFramerateLimit(60);
 	Game *game = new Game;
 	Menu *menu = new Menu;
+	Score *score = new Score;
+	int frame = 0;
 	bool play = false;
 
 	while (window.isOpen())
 	{
-
 		sf::Event e;
 		while (window.pollEvent(e))
 		{
@@ -29,25 +31,37 @@ int main()
 			{
 				window.close();
 			}
-			if (play == true) 
+			if (frame == 1) 
 			{ 
-				play = game->events(e, window); 
+				frame = game->events(e, window); 
 			}
-			else
+			else if(frame == 0)
 			{
-				play = menu->events(e, window);
-				if (play == true)
+				frame = menu->events(e, window);
+				if (frame == 1)
+				{
 					game->prepareBoard();
+				}
+			}
+			else if (frame == 2)
+			{
+				
 			}
 		}
-		if (play == true)
+		if (frame == 1)
 		{
 			play = game->gameEngine();
+			if (play) frame = 1;
+			else frame = 0;
 			game->drawing(window);
 		}
-		else
+		else if(frame == 0)
 		{
-			menu->drawText(window);
+			menu->drawMenu(window);
+		}
+		else if (frame == 2)
+		{
+			score->drawScore(window);
 		}
 
 	}

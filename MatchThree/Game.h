@@ -50,7 +50,7 @@ public:
 
 	// METHODS
 	void prepareBoard();
-	bool events(sf::Event e, sf::RenderWindow &window);
+	int events(sf::Event e, sf::RenderWindow &window);
 	void drawing(sf::RenderWindow &window);
 	bool gameEngine();
 	void checkStart();

@@ -9,7 +9,7 @@ public:
 	Menu();
 	~Menu();
 
-	void drawText(sf::RenderWindow &window);
-	bool events(sf::Event e, sf::RenderWindow &window);
+	void drawMenu(sf::RenderWindow &window);
+	int events(sf::Event e, sf::RenderWindow &window);
 };
 

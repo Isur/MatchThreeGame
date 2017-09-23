@@ -10,19 +10,17 @@ Menu::Menu()
 
 
 }
-
-
 Menu::~Menu()
 {
 }
-
-void Menu::drawText(sf::RenderWindow &window)
+// METHODS
+void Menu::drawMenu(sf::RenderWindow &window)
 {
 	window.clear(sf::Color(40,40,40,255));
 	window.draw(backgroundSprite);
 	window.display();
 }
-bool Menu::events(sf::Event e, sf::RenderWindow &window)
+int Menu::events(sf::Event e, sf::RenderWindow &window)
 {
 	if (e.type == sf::Event::MouseMoved)
 	{
@@ -62,11 +60,11 @@ bool Menu::events(sf::Event e, sf::RenderWindow &window)
 		{
 			if (mousePosition.y >= 300 && mousePosition.y <= 400)
 			{
-				return true;
+				return 1;
 			}
 			else if (mousePosition.y >= 425 && mousePosition.y <= 525)
 			{
-				
+				return 2;
 			}
 			else if (mousePosition.y >= 550 && mousePosition.y <= 650)
 			{
@@ -74,4 +72,5 @@ bool Menu::events(sf::Event e, sf::RenderWindow &window)
 			}
 		}
 	}
+	return 0;
 }
