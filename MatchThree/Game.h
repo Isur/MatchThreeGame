@@ -14,6 +14,7 @@ private:
 	bool isMatch;
 	bool game;
 	bool start;
+	bool done;
 	int clicked;
 	int score;
 	int x0, x1, y0, y1, i, j;
@@ -40,6 +41,7 @@ private:
 	void checkMoves();
 	bool checkPosibleMove(Gem *gem[][SIZE_Y]);
 	void setTexts();
+	bool gameDone();
 public:
 	Game();
 	~Game();
@@ -53,6 +55,6 @@ public:
 	int events(sf::Event e, sf::RenderWindow &window);
 	void drawing(sf::RenderWindow &window);
 	bool gameEngine();
-	void checkStart();
+
 };
 

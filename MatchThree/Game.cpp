@@ -21,29 +21,19 @@ Game::Game()
 	gameOverText.setPosition(sf::Vector2f(100.0, 500.0));
 	gameOverInfoText.setFont(font);
 	gameOverInfoText.setPosition(sf::Vector2f(100.0, 50.0));
-	prepareBoard();
 	start = false;
+	prepareBoard();
 }
 Game::~Game()
 {
 }
 // METHODS
-void Game::checkStart()
-{
-	for (i = 0; i < SIZE_X; i++)
-	{
-		for (j = 0; j < SIZE_Y; j++)
-		{
-			if (bg_Gem[i][j]->getLevel() != 2) prepareBoard();
-		}
-	}
-}
+
 void Game::prepareBoard()
 {
 	int i, j, tempType;
 	srand(time(NULL));
 	sf::Vector2f position;
-	sftime = sf::seconds(60);
 	isMoving = false;
 	isSwap = true;
 	isMatch = false;
@@ -51,6 +41,7 @@ void Game::prepareBoard()
 	clicked = 0;
 	score = 0;
 	start = false;
+	done = false;
 	for (i = 0; i < SIZE_X; i++)
 	{
 		for (j = 0; j < SIZE_Y; j++)
@@ -65,6 +56,7 @@ void Game::prepareBoard()
 		}
 	}
 	
+	sftime = sf::seconds(60);
 	
 }
 void Game::drawing(sf::RenderWindow &window)
@@ -72,7 +64,7 @@ void Game::drawing(sf::RenderWindow &window)
 	int i, j;
 	window.clear();
 	window.draw(backgroundSprite);
-	if (game == false)
+	if (done == true)
 	{
 		window.draw(gameOverText);
 		window.draw(gameOverInfoText);
@@ -95,12 +87,10 @@ bool Game::finishGame()
 	if (sftime <= sf::seconds(0))
 	{
 		game = false;
+		start = false;
 		sftime = sf::seconds(0);
-		gameOverText.setString("GAME OVER");
-		gameOverInfoText.setString("CLICK SPACE TO PLAY AGAIN");
 		Score *scoreTable = new Score;
 		scoreTable->checkIfTop(score);
-		printf("\n SCORE: %i", score);
 		delete scoreTable;
 	}
 	else game = true;
@@ -131,6 +121,9 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
+				Score *scoreTable = new Score;
+				scoreTable->checkIfTop(score);
+				delete scoreTable;
 				return 0;
 			}
 		}
@@ -139,7 +132,7 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 bool Game::gameEngine()
 {
 	int points;
-	sftime -= clock.getElapsedTime();
+	if(start == true) sftime -= clock.getElapsedTime();
 	if (clicked == 1 && game == true && isMoving == false)
 	{
 		x0 = mousePosition.x / TILESIZE;
@@ -180,7 +173,7 @@ bool Game::gameEngine()
 	}
 	isMatch = false;
 	isMatch = match(gem,bg_Gem);
-	if (isMatch == true)
+	if (isMatch == true && start == true)
 	{
 		sftime += sf::seconds(1);
 	}
@@ -309,7 +302,7 @@ bool Game::deleteAnimation(Gem *gem[][SIZE_Y])
 void Game::updateGrid(Gem *gem[][SIZE_Y])
 {
 	int i, j;
-
+	done = gameDone();
 	for (i = 0; i < SIZE_X; i++)
 	{
 		for (j = 0; j < SIZE_Y; j++)
@@ -337,6 +330,7 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 			}
 		}
 	}
+
 }
 void Game::checkMoves()
 {
@@ -429,4 +423,23 @@ void Game::setTexts()
 {
 	timeText.setString("TIME: " + std::to_string((int)sftime.asSeconds()));
 	scoreText.setString("SCORE: " + std::to_string(score));
+	if (done == true)
+	{
+		gameOverText.setString("DONE!");
+		gameOverInfoText.setString("YOU CAN PLAY KEEP PLAYING!");
+	}
+}
+bool Game::gameDone()
+{
+	for (int i = 0; i < SIZE_X; i++)
+	{
+		for (int j = 0; i < SIZE_Y; j++)
+		{
+			if (bg_Gem[i][j]->getLevel() != 0)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }

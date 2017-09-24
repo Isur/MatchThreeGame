@@ -12,15 +12,24 @@
 #include "MatchThree.h"
 #include "settings.h"
 
+void deleteObjects(Game *game, Menu *menu, Score *score, Help *help)
+{
+	delete game;
+	delete menu;
+	delete score;
+	delete help;
+}
+
 int main()
 {
 	// SETTINGS
 	sf::RenderWindow window(sf::VideoMode(550, 700), "Match 3 Game", sf::Style::Close);
 	window.setFramerateLimit(60);
-	Game *game = new Game;
 	Menu *menu = new Menu;
+	Game *game = new Game;
 	Score *score = new Score;
 	Help *help = new Help;
+	
 	int frame = 0;
 	bool play = false;
 
@@ -35,12 +44,12 @@ int main()
 			}
 			switch (frame)
 			{
-			case 1:
-				frame = game->events(e, window);
-				break;
 			case 0:
 				frame = menu->events(e, window);
-				if (frame == 1)	game->prepareBoard();
+				if (frame == 1) game->prepareBoard();
+				break;
+			case 1:
+				frame = game->events(e, window);
 				break;
 			case 2:
 				frame = score->events(e, window);
@@ -55,7 +64,7 @@ int main()
 		switch (frame)
 		{
 		case 0:
-			menu->drawMenu(window);
+			if(menu) menu->drawMenu(window);
 			break;
 		case 1:
 			play = game->gameEngine();
