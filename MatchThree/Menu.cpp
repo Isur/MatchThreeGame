@@ -48,6 +48,19 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 				backgroundSprite.setTexture(backgroundTexture);
 			}
 		}
+		else if (mousePosition.x >= 450 && mousePosition.x <= 450+100)
+		{
+			if (mousePosition.y >= 600 && mousePosition.y <= 600 + 100)
+			{
+				backgroundTexture.loadFromFile("images/menuHelp.png");
+				backgroundSprite.setTexture(backgroundTexture);
+			}
+			else
+			{
+				backgroundTexture.loadFromFile("images/menu.png");
+				backgroundSprite.setTexture(backgroundTexture);
+			}
+		}
 		else 
 		{
 			backgroundTexture.loadFromFile("images/menu.png");
@@ -69,6 +82,13 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 			else if (mousePosition.y >= 550 && mousePosition.y <= 650)
 			{
 				window.close();
+			}
+		}
+		else if (mousePosition.x >= 450 && mousePosition.x <= 450 + 100)
+		{
+			if (mousePosition.y >= 600 && mousePosition.y <= 600 + 100)
+			{
+				return 3;
 			}
 		}
 	}

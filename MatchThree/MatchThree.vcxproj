@@ -156,6 +156,7 @@
     <ClInclude Include="FgGem.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gem.h" />
+    <ClInclude Include="Help.h" />
     <ClInclude Include="MatchThree.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Object.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="FgGem.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gem.cpp" />
+    <ClCompile Include="Help.cpp" />
     <ClCompile Include="MatchThree.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Object.cpp" />

@@ -8,7 +8,7 @@
 #include "settings.h"
 Game::Game()
 {
-	backgroundTexture.loadFromFile("images/background.png");
+	backgroundTexture.loadFromFile("images/bg.png");
 	backgroundSprite.setTexture(backgroundTexture);
 	font.loadFromFile("font.ttf");
 	offset.x = OFFSET_X;
@@ -43,7 +43,7 @@ void Game::prepareBoard()
 	int i, j, tempType;
 	srand(time(NULL));
 	sf::Vector2f position;
-	sftime = sf::seconds(3);
+	sftime = sf::seconds(60);
 	isMoving = false;
 	isSwap = true;
 	isMatch = false;
@@ -100,6 +100,7 @@ bool Game::finishGame()
 		gameOverInfoText.setString("CLICK SPACE TO PLAY AGAIN");
 		Score *scoreTable = new Score;
 		scoreTable->checkIfTop(score);
+		printf("\n SCORE: %i", score);
 		delete scoreTable;
 	}
 	else game = true;
@@ -108,20 +109,20 @@ bool Game::finishGame()
 int Game::events(sf::Event e, sf::RenderWindow &window)
 {
 	if (e.type == sf::Event::MouseButtonPressed)
+	{
+		mousePosition = sf::Mouse::getPosition(window);
+		if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
+			mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
+			mousePosition.x > offset.x &&
+			mousePosition.y > offset.y)
 		{
-			mousePosition = sf::Mouse::getPosition(window);
-			if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
-				mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
-				mousePosition.x > offset.x &&
-				mousePosition.y > offset.y)
+			if (isMoving == false)
 			{
-				if (isMoving == false)
-				{
-					clicked++;
-				}
-				mousePosition -= offset;
+				clicked++;
 			}
+			mousePosition -= offset;
 		}
+	}
 	if (e.type == sf::Event::KeyPressed)
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))

@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Menu.h"
 #include "Score.h"
+#include "Help.h"
 #include "MatchThree.h"
 #include "settings.h"
 
@@ -19,6 +20,7 @@ int main()
 	Game *game = new Game;
 	Menu *menu = new Menu;
 	Score *score = new Score;
+	Help *help = new Help;
 	int frame = 0;
 	bool play = false;
 
@@ -31,38 +33,48 @@ int main()
 			{
 				window.close();
 			}
-			if (frame == 1) 
-			{ 
-				frame = game->events(e, window); 
-			}
-			else if(frame == 0)
+			switch (frame)
 			{
+			case 1:
+				frame = game->events(e, window);
+				break;
+			case 0:
 				frame = menu->events(e, window);
-				if (frame == 1)
-				{
-					game->prepareBoard();
-				}
-			}
-			else if (frame == 2)
-			{
-				
+				if (frame == 1)	game->prepareBoard();
+				break;
+			case 2:
+				frame = score->events(e, window);
+				break;
+			case 3:
+				frame = help->events(e, window);
+			default:
+				break;
+
 			}
 		}
-		if (frame == 1)
+		switch (frame)
 		{
+		case 0:
+			menu->drawMenu(window);
+			break;
+		case 1:
 			play = game->gameEngine();
 			if (play) frame = 1;
 			else frame = 0;
 			game->drawing(window);
-		}
-		else if(frame == 0)
-		{
-			menu->drawMenu(window);
-		}
-		else if (frame == 2)
-		{
+			break;
+		case 2:
 			score->drawScore(window);
+			break;
+		case 3:
+			help->drawHelp(window);
+			break;
+		default:
+			break;
 		}
+
+
+
 
 	}
 
