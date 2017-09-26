@@ -9,6 +9,10 @@ Score::Score()
 	
 	backgroundTexture.loadFromFile("images/backgroundScore.png");
 	backgroundSprite.setTexture(backgroundTexture);
+	buttonTexture.loadFromFile("images/backButtons.png");
+	buttonSprite.setTexture(buttonTexture);
+	buttonSprite.setTextureRect(sf::IntRect(0, 0, 275, 100));
+	buttonSprite.setPosition(sf::Vector2f(250, 580));
 	font.loadFromFile("font.ttf");
 	sf::Vector2f pos;
 	pos.x = 100;
@@ -44,40 +48,42 @@ void Score::drawScore(sf::RenderWindow & window)
 	window.clear(sf::Color(40, 40, 40, 255));
 	window.draw(backgroundSprite);
 	for (int i = 0; i < 10; i++) window.draw(text[i]);
+	window.draw(buttonSprite);
 	window.display();
 }
-
+void Score::updateImage(bool clicked)
+{
+	if(clicked == true) buttonSprite.setTextureRect(sf::IntRect(0, 100, 275, 100));
+	else buttonSprite.setTextureRect(sf::IntRect(0, 0, 275, 100));
+}
 int Score::events(sf::Event e, sf::RenderWindow & window)
 {
 	if (e.type == sf::Event::MouseMoved)
 	{
 		
 		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-		if (mousePosition.x >= 269 && mousePosition.x <= 269 + 275)
+		if (mousePosition.x >= 250 && mousePosition.x <= 250 + 275)
 		{
-			if (mousePosition.y >= 594 && mousePosition.y <= 594 + 100)
+			if (mousePosition.y >= 580 && mousePosition.y <= 580 + 100)
 			{
-				backgroundTexture.loadFromFile("images/backgroundScoreSelected.png");
-				backgroundSprite.setTexture(backgroundTexture);
+				updateImage(true);
 			}
 			else
 			{
-				backgroundTexture.loadFromFile("images/backgroundScore.png");
-				backgroundSprite.setTexture(backgroundTexture);
+				updateImage(false);
 			}
 		}
 		else
 		{
-			backgroundTexture.loadFromFile("images/backgroundScore.png");
-			backgroundSprite.setTexture(backgroundTexture);
+			updateImage(false);
 		}
 	}
 	if (e.type == sf::Event::MouseButtonPressed)
 	{
 		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-		if (mousePosition.x >= 269 && mousePosition.x <= 269 + 275)
+		if (mousePosition.x >= 250 && mousePosition.x <= 250 + 275)
 		{
-			if (mousePosition.y >= 594 && mousePosition.y <= 594 + 100)
+			if (mousePosition.y >= 580 && mousePosition.y <= 580 + 100)
 			{
 				return 0;
 			}

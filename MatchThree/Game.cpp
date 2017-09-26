@@ -56,7 +56,7 @@ void Game::prepareBoard()
 		}
 	}
 	
-	sftime = sf::seconds(60);
+	sftime = sf::seconds(6000);
 	
 }
 void Game::drawing(sf::RenderWindow &window)
@@ -264,8 +264,7 @@ bool Game::match(Gem *gem[][SIZE_Y], bgGem *bg_Gem[][SIZE_Y])
 					fg_Gem[i][j]->setLevel(fg_Gem[i][j]->getLevel() - 1);
 
 				}
-				
-				gem[i][j]->setTypeNotSprite(TYPES);
+				if(fg_Gem[i][j]->getLevel() == 0) gem[i][j]->setTypeNotSprite(TYPES);
 				gem[i][j]->decreaseMatch();
 				
 			}
@@ -317,7 +316,7 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 				}
 				else
 				{
-					if (fg_Gem[i][j - 1]->getLevel() == 0)
+					if (fg_Gem[i][j - 1]->getLevel() == 0 && fg_Gem[i][j]->getLevel() == 0)
 					{
 						gem[i][j]->setAlpha(255);
 						swap(gem, i, j, i, j - 1);
@@ -426,16 +425,15 @@ void Game::setTexts()
 	if (done == true)
 	{
 		gameOverText.setString("DONE!");
-		gameOverInfoText.setString("YOU CAN PLAY KEEP PLAYING!");
 	}
 }
 bool Game::gameDone()
 {
 	for (int i = 0; i < SIZE_X; i++)
 	{
-		for (int j = 0; i < SIZE_Y; j++)
+		for (int j = 0; j < SIZE_Y; j++)
 		{
-			if (bg_Gem[i][j]->getLevel() != 0)
+			if (bg_Gem[i][j]->getLevel() > 0)
 			{
 				return false;
 			}

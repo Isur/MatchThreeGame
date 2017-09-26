@@ -16,7 +16,7 @@ FgGem::FgGem(bool movable, int type, sf::Vector2f position, int level)
 	this->sprite.setTexture(texture);
 	this->sprite.setTextureRect(sf::IntRect(this->level * 40, 0, 40, 40));
 	this->sprite.setPosition(this->position);
-	this->alpha = 150;
+	this->alpha = 255;
 	this->sprite.setColor(sf::Color(255, 255, 255, this->alpha));
 }
 

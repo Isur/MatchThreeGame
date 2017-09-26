@@ -4,7 +4,14 @@ class Menu
 {
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
+	sf::Texture textureButtons;
+	sf::Texture textureButtonsClicked;
+	sf::Sprite buttonsMenu[4];
+
 	sf::Vector2i mousePosition;
+
+	void imagesUpdate(int i, bool clicked);
+	void imagesUpdate(bool out);
 public:
 	Menu();
 	~Menu();

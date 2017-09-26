@@ -3,8 +3,12 @@
 class Help
 {
 private:
-	sf::Font font;
-	sf::Text text;
+	sf::Texture backgroundTexture;
+	sf::Sprite backgroundSprite;
+	sf::Texture buttonTexture;
+	sf::Sprite buttonSprite;
+
+	void Help::updateImage(bool clicked);
 public:
 	Help();
 	~Help();
