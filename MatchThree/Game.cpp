@@ -32,7 +32,7 @@ Game::~Game()
 void Game::prepareBoard()
 {
 	int i, j, tempType;
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	sf::Vector2f position;
 	isMoving = false;
 	isSwap = true;
@@ -47,8 +47,8 @@ void Game::prepareBoard()
 		for (j = 0; j < SIZE_Y; j++)
 		{
 			tempType = rand() % TYPES;
-			position.x = offset.x + i*TILESIZE;
-			position.y = offset.y + j*TILESIZE;
+			position.x = (float) offset.x + i*TILESIZE;
+			position.y = (float) offset.y + j*TILESIZE;
 			bg_Gem[i][j] = new bgGem(true, position, 1);
 			gem[i][j] = new Gem(true, position, tempType);
 			if(j == 4)	fg_Gem[i][j] = new FgGem(true, 1, position, 2);
@@ -131,7 +131,6 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 }
 bool Game::gameEngine()
 {
-	int points;
 	if(start == true) sftime -= clock.getElapsedTime();
 	if (clicked == 1 && game == true && isMoving == false)
 	{
