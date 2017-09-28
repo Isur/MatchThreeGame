@@ -46,7 +46,10 @@ int main()
 			{
 			case 0:
 				frame = menu->events(e, window);
-				if (frame == 1) game->prepareBoard();
+				if (frame == 1)
+				{
+					game->prepareBoard(1);
+				}
 				break;
 			case 1:
 				frame = game->events(e, window);

@@ -18,6 +18,7 @@ private:
 	int clicked;
 	int score;
 	int x0, x1, y0, y1, i, j;
+	int level = 0;
 	sf::Time sftime;
 	sf::Clock clock;
 	sf::Font font;
@@ -51,7 +52,7 @@ public:
 	// SETTERS
 
 	// METHODS
-	void prepareBoard();
+	void prepareBoard(int level);
 	int events(sf::Event e, sf::RenderWindow &window);
 	void drawing(sf::RenderWindow &window);
 	bool gameEngine();

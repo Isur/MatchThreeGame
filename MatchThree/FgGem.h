@@ -15,6 +15,7 @@ public:
 	int getLevel() { return this->level; }
 	// SETTERS
 	void setLevel(int level) { this->level = level; }
+	void setAlpha(int alpha) { this->alpha = alpha; }
 	// METHODS
 	void drawFgGem(sf::RenderWindow &window);
 };

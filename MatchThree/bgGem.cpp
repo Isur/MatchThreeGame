@@ -2,17 +2,14 @@
 #include "bgGem.h"
 
 
-bgGem::bgGem(bool movable, sf::Vector2f position, int type)
+bgGem::bgGem(bool movable, sf::Vector2f position, int type, int level)
 	:Object(movable, position)
 {
 	this->position = position;
 	this->movable = movable;
 	this->type = type;
-	this->level = 2;
-	if (this->type == 1)
-	{
-		this->texture.loadFromFile("images/tilesBg.png");
-	}
+	this->level = level;
+	this->texture.loadFromFile("images/tilesBg.png");
 	this->sprite.setTexture(texture);
 	this->sprite.setTextureRect(sf::IntRect(this->level * 40, 0, 40, 40));
 	this->sprite.setPosition(this->position);

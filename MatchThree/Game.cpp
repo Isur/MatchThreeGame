@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include "settings.h"
+#include <fstream>
+#include <string>
+#include <iostream>
 Game::Game()
 {
 	backgroundTexture.loadFromFile("images/bg.png");
@@ -22,16 +25,18 @@ Game::Game()
 	gameOverInfoText.setFont(font);
 	gameOverInfoText.setPosition(sf::Vector2f(100.0, 50.0));
 	start = false;
-	prepareBoard();
+	//score = 0;
+	prepareBoard(1);
 }
 Game::~Game()
 {
 }
 // METHODS
 
-void Game::prepareBoard()
+void Game::prepareBoard(int level)
 {
 	int i, j, tempType;
+	this->level = level;
 	srand((unsigned int)time(NULL));
 	sf::Vector2f position;
 	isMoving = false;
@@ -39,24 +44,65 @@ void Game::prepareBoard()
 	isMatch = false;
 	game = true;
 	clicked = 0;
-	score = 0;
+	if(this->level == 1) score = 0;
 	start = false;
 	done = false;
+	std::ifstream fileLevel;
+	std::string levelString("levels/");
+	if(level <= 4) levelString.append(std::to_string(level));
+	else levelString.append("4");
+	levelString.append(".egg");
+	fileLevel.open(levelString);
+	char levelChar[SIZE_X][SIZE_Y];
+	for (i = 0; i < SIZE_Y; i++)
+	{
+		std::getline(fileLevel, levelString);
+		for (j = 0; j < SIZE_X; j++)
+		{
+			levelChar[j][i] = levelString[j];
+		}
+	}
 	for (i = 0; i < SIZE_X; i++)
 	{
 		for (j = 0; j < SIZE_Y; j++)
 		{
+			// 1 - ONLY GEM
+			// 2 - GEM WITH BACKGROUND
+			// 3 - FROZEN GEM
+			// 4 - FROZEN GEM WITH BACKGROUND
 			tempType = rand() % TYPES;
 			position.x = (float) offset.x + i*TILESIZE;
 			position.y = (float) offset.y + j*TILESIZE;
-			bg_Gem[i][j] = new bgGem(true, position, 1);
+			
 			gem[i][j] = new Gem(true, position, tempType);
-			if(j == 4)	fg_Gem[i][j] = new FgGem(true, 1, position, 2);
-			else fg_Gem[i][j] = new FgGem(true, 1, position, 0);
+			switch (levelChar[i][j])
+			{
+			case '1':
+				bg_Gem[i][j] = new bgGem(true, position, 0, 0);
+				fg_Gem[i][j] = new FgGem(true, 1, position, 0);
+				break;
+			case '2':
+				bg_Gem[i][j] = new bgGem(true, position, 1, 2);
+				fg_Gem[i][j] = new FgGem(true, 1, position, 0);
+				break;
+			case '3':
+				bg_Gem[i][j] = new bgGem(true, position, 0, 0);
+				fg_Gem[i][j] = new FgGem(true, 1, position, 2);
+				break;
+			case '4':
+				bg_Gem[i][j] = new bgGem(true, position, 1, 2);
+				fg_Gem[i][j] = new FgGem(true, 1, position, 2);
+				break;
+
+			}
+			gem[i][j]->setAlpha(0);
+			bg_Gem[i][j]->setAlpha(0);
+			fg_Gem[i][j]->setAlpha(0);
 		}
 	}
 	
-	sftime = sf::seconds(6000);
+	
+	sftime = sf::seconds(60);
 	
 }
 void Game::drawing(sf::RenderWindow &window)
@@ -67,8 +113,8 @@ void Game::drawing(sf::RenderWindow &window)
 	if (done == true)
 	{
 		window.draw(gameOverText);
-		window.draw(gameOverInfoText);
 	}
+	window.draw(gameOverInfoText);
 	window.draw(scoreText);
 	window.draw(timeText);
 	for (i = 0; i < SIZE_X; i++)
@@ -117,7 +163,7 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
-				prepareBoard();
+				prepareBoard(1);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
@@ -131,7 +177,25 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 }
 bool Game::gameEngine()
 {
-	if(start == true) sftime -= clock.getElapsedTime();
+	if (start == false)
+	{
+		int a;
+		for (i = 0; i < SIZE_X; i++)
+		{
+			for (j = 0; j < SIZE_Y; j++)
+			{
+				a = gem[i][j]->getAlpha();
+				if (a < 255)
+				{
+					a += 5;
+					gem[i][j]->setAlpha(a);
+					bg_Gem[i][j]->setAlpha(a);
+					fg_Gem[i][j]->setAlpha(a);
+				}
+			}
+		}
+	}
+	if (start == true) sftime -= clock.getElapsedTime();
 	if (clicked == 1 && game == true && isMoving == false)
 	{
 		x0 = mousePosition.x / TILESIZE;
@@ -140,7 +204,7 @@ bool Game::gameEngine()
 		{
 			clicked = 0;
 		}
-		else 
+		else
 		{
 			gem[x0][y0]->updateTextrue(true);
 		}
@@ -153,8 +217,8 @@ bool Game::gameEngine()
 
 		if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
 		{
-			swap(gem, x0, y0, x1, y1); 
-			if(match(gem, bg_Gem) == true)
+			swap(gem, x0, y0, x1, y1);
+			if (match(gem, bg_Gem) == true)
 			{
 				sftime += sf::seconds(2);
 				isSwap = true;
@@ -171,7 +235,7 @@ bool Game::gameEngine()
 		}
 	}
 	isMatch = false;
-	isMatch = match(gem,bg_Gem);
+	isMatch = match(gem, bg_Gem);
 	if (isMatch == true && start == true)
 	{
 		sftime += sf::seconds(1);
@@ -186,9 +250,28 @@ bool Game::gameEngine()
 		swap(gem, x0, y0, x1, y1);
 		isSwap = true;
 	}
-	if (isMoving == false)
+	if (isMoving == false && done == false)
 	{
 		updateGrid(gem);
+	}
+	else if (done == true)
+	{
+		for (i = 0; i < SIZE_X; i++)
+		{
+			for (j = 0; j < SIZE_Y; j++)
+			{
+				if (gem[i][j]->getAlpha() > 5)
+				{
+					gem[i][j]->setAlpha(gem[i][j]->getAlpha() - 5);
+					isMoving = true;
+				}
+			}
+		}
+		if (gem[SIZE_X - 1][SIZE_Y - 1]->getAlpha() <= 5)
+		{
+			this->level++;
+			prepareBoard(level);
+		}
 	}
 	if (isMoving == false)
 	{
@@ -197,6 +280,7 @@ bool Game::gameEngine()
 
 	setTexts();
 	clock.restart();
+
 	return finishGame();
 }
 void Game::swap(Gem *gem[][SIZE_Y], int x0, int y0, int x1, int y1)
@@ -253,7 +337,7 @@ bool Game::match(Gem *gem[][SIZE_Y], bgGem *bg_Gem[][SIZE_Y])
 		{
 			if (gem[i][j]->getMatch() > 0)
 			{
-				score += gem[i][j]->getValue();
+				if(start == true) score += gem[i][j]->getValue();
 				if (bg_Gem[i][j]->getLevel() > 0 && start == true && fg_Gem[i][j]->getLevel() == 0)
 				{
 					bg_Gem[i][j]->setLevel(bg_Gem[i][j]->getLevel() - 1);
@@ -301,34 +385,36 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 {
 	int i, j;
 	done = gameDone();
-	for (i = 0; i < SIZE_X; i++)
+	if (done == false)
 	{
-		for (j = 0; j < SIZE_Y; j++)
+		for (i = 0; i < SIZE_X; i++)
 		{
-			if (gem[i][j]->getType() == TYPES)
+			for (j = 0; j < SIZE_Y; j++)
 			{
+				if (gem[i][j]->getType() == TYPES)
+				{
 
-				if (j == 0)
-				{
-					gem[i][j]->setType(rand() % TYPES);
-					gem[i][j]->setAlpha(255);
-				}
-				else
-				{
-					if (fg_Gem[i][j - 1]->getLevel() == 0 && fg_Gem[i][j]->getLevel() == 0)
+					if (j == 0)
 					{
+						gem[i][j]->setType(rand() % TYPES);
 						gem[i][j]->setAlpha(255);
-						swap(gem, i, j, i, j - 1);
 					}
 					else
 					{
-						gem[i][j]->setUnderBlock(true);
+						if (fg_Gem[i][j - 1]->getLevel() == 0 && fg_Gem[i][j]->getLevel() == 0)
+						{
+							gem[i][j]->setAlpha(255);
+							swap(gem, i, j, i, j - 1);
+						}
+						else
+						{
+							gem[i][j]->setUnderBlock(true);
+						}
 					}
 				}
 			}
 		}
 	}
-
 }
 void Game::checkMoves()
 {
@@ -348,7 +434,7 @@ void Game::checkMoves()
 			}
 		}
 	}
-	else
+	else if(done == false)
 	{
 		for (i = 0; i < SIZE_X; i++)
 		{
@@ -425,16 +511,37 @@ void Game::setTexts()
 	{
 		gameOverText.setString("DONE!");
 	}
+	gameOverInfoText.setString("LEVEL: " + std::to_string(level));
 }
 bool Game::gameDone()
 {
-	for (int i = 0; i < SIZE_X; i++)
+	if (level == 1)
 	{
-		for (int j = 0; j < SIZE_Y; j++)
+		if (score < 1000) return false;
+	}
+	else if (level == 2)
+	{
+		for (int i = 0; i < SIZE_X; i++)
 		{
-			if (bg_Gem[i][j]->getLevel() > 0)
+			for (int j = 0; j < SIZE_Y; j++)
 			{
-				return false;
+				if (fg_Gem[i][j]->getLevel() > 0)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else if (level == 3 || level == 4)
+	{
+		for (int i = 0; i < SIZE_X; i++)
+		{
+			for (int j = 0; j < SIZE_Y; j++)
+			{
+				if (bg_Gem[i][j]->getLevel() > 0)
+				{
+					return false;
+				}
 			}
 		}
 	}
