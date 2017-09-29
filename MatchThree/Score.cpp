@@ -45,11 +45,9 @@ void Score::drawScore(sf::RenderWindow & window)
 	}
 	scoreFile.close();
 
-	window.clear(sf::Color(40, 40, 40, 255));
 	window.draw(backgroundSprite);
 	for (int i = 0; i < 10; i++) window.draw(text[i]);
 	window.draw(buttonSprite);
-	window.display();
 }
 void Score::updateImage(bool clicked)
 {

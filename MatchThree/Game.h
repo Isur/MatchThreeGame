@@ -19,6 +19,8 @@ private:
 	int score;
 	int x0, x1, y0, y1, i, j;
 	int level = 0;
+	int oldScore = 0;
+	std::string levelType;
 	sf::Time sftime;
 	sf::Clock clock;
 	sf::Font font;

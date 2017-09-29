@@ -19,10 +19,8 @@ Help::~Help()
 
 void  Help::drawHelp(sf::RenderWindow &window)
 {
-	window.clear(sf::Color(40, 40, 40, 255));
 	window.draw(backgroundSprite);
 	window.draw(buttonSprite);
-	window.display();
 }
 void Help::updateImage(bool clicked)
 {

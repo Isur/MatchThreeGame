@@ -28,13 +28,11 @@ Menu::~Menu()
 // METHODS
 void Menu::drawMenu(sf::RenderWindow &window)
 {
-	window.clear(sf::Color(40,40,40,255));
 	window.draw(backgroundSprite);
 	for (int i = 0; i < 4; i++)
 	{
 		window.draw(buttonsMenu[i]);
 	}
-	window.display();
 }
 
 void Menu::imagesUpdate(int i, bool clicked)

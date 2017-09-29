@@ -7,7 +7,7 @@ Gem::Gem(bool movable, sf::Vector2f position, int type)
 {
 	this->type = type;
 	this->position = position;
-	this->value = type * 10;
+	this->value = (type+1) * 10;
 	this->movable = movable;
 	this->texture.loadFromFile("images/tiles.png");
 	this->sprite.setPosition(position);

@@ -7,6 +7,7 @@
 #include "bgGem.h"
 #include "Game.h"
 #include "Menu.h"
+#include "Cursor.h"
 #include "Score.h"
 #include "Help.h"
 #include "MatchThree.h"
@@ -24,11 +25,13 @@ int main()
 {
 	// SETTINGS
 	sf::RenderWindow window(sf::VideoMode(550, 700), "Match 3 Game", sf::Style::Close);
+	window.setMouseCursorVisible(false);
 	window.setFramerateLimit(60);
 	Menu *menu = new Menu;
 	Game *game = new Game;
 	Score *score = new Score;
 	Help *help = new Help;
+	Cursor *cursor = new Cursor;
 	
 	int frame = 0;
 	bool play = false;
@@ -41,6 +44,11 @@ int main()
 			if (e.type == sf::Event::Closed)
 			{
 				window.close();
+			}
+			if (e.type == sf::Event::MouseMoved)
+			{
+				cursor->move(sf::Mouse::getPosition(window));
+				
 			}
 			switch (frame)
 			{
@@ -64,6 +72,8 @@ int main()
 
 			}
 		}
+		window.clear();
+		
 		switch (frame)
 		{
 		case 0:
@@ -84,9 +94,10 @@ int main()
 		default:
 			break;
 		}
+		
 
-
-
+		cursor->drawCursor(window);
+		window.display();
 
 	}
 

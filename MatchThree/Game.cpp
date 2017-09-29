@@ -36,6 +36,7 @@ Game::~Game()
 void Game::prepareBoard(int level)
 {
 	int i, j, tempType;
+	this->oldScore = score;
 	this->level = level;
 	srand((unsigned int)time(NULL));
 	sf::Vector2f position;
@@ -49,9 +50,10 @@ void Game::prepareBoard(int level)
 	done = false;
 	std::ifstream fileLevel;
 	std::string levelString("levels/");
-	if(level <= 4) levelString.append(std::to_string(level));
+	if(this->level <= 4) levelString.append(std::to_string(this->level));
 	else levelString.append("4");
 	levelString.append(".egg");
+	std::cout << levelString << "x\n";
 	fileLevel.open(levelString);
 	char levelChar[SIZE_X][SIZE_Y];
 	for (i = 0; i < SIZE_Y; i++)
@@ -62,6 +64,9 @@ void Game::prepareBoard(int level)
 			levelChar[j][i] = levelString[j];
 		}
 	}
+	std::getline(fileLevel, levelString);
+	fileLevel.close();
+	levelType = levelString;
 	for (i = 0; i < SIZE_X; i++)
 	{
 		for (j = 0; j < SIZE_Y; j++)
@@ -99,16 +104,12 @@ void Game::prepareBoard(int level)
 			bg_Gem[i][j]->setAlpha(0);
 			fg_Gem[i][j]->setAlpha(0);
 		}
-	}
-	
-	
+	}	
 	sftime = sf::seconds(60);
-	
 }
 void Game::drawing(sf::RenderWindow &window)
 {
 	int i, j;
-	window.clear();
 	window.draw(backgroundSprite);
 	if (done == true)
 	{
@@ -126,7 +127,6 @@ void Game::drawing(sf::RenderWindow &window)
 			fg_Gem[i][j]->drawFgGem(window);
 		}
 	}
-	window.display();
 }
 bool Game::finishGame()
 {
@@ -179,59 +179,62 @@ bool Game::gameEngine()
 {
 	if (start == false)
 	{
-		int a;
 		for (i = 0; i < SIZE_X; i++)
 		{
 			for (j = 0; j < SIZE_Y; j++)
 			{
-				a = gem[i][j]->getAlpha();
-				if (a < 255)
+				if (gem[i][j]->getAlpha() < 255)
 				{
-					a += 5;
-					gem[i][j]->setAlpha(a);
-					bg_Gem[i][j]->setAlpha(a);
-					fg_Gem[i][j]->setAlpha(a);
+					gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
+					bg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
+					fg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() +5);
 				}
 			}
 		}
 	}
 	if (start == true) sftime -= clock.getElapsedTime();
-	if (clicked == 1 && game == true && isMoving == false)
+	if (mousePosition.x <= TILESIZE*SIZE_X &&
+		mousePosition.y <= TILESIZE*SIZE_Y &&
+		mousePosition.x > 0 &&
+		mousePosition.y > 0)
 	{
-		x0 = mousePosition.x / TILESIZE;
-		y0 = mousePosition.y / TILESIZE;
-		if (fg_Gem[x0][y0]->getLevel() > 0 || gem[x0][y0]->getType() == TYPES)
+		if (clicked == 1 && game == true && isMoving == false)
 		{
-			clicked = 0;
-		}
-		else
-		{
-			gem[x0][y0]->updateTextrue(true);
-		}
-	}
-	else if (clicked == 2 && isMoving == false)
-	{
-		start = true;
-		x1 = mousePosition.x / TILESIZE;
-		y1 = mousePosition.y / TILESIZE;
-
-		if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
-		{
-			swap(gem, x0, y0, x1, y1);
-			if (match(gem, bg_Gem) == true)
+			x0 = mousePosition.x / TILESIZE;
+			y0 = mousePosition.y / TILESIZE;
+			if (fg_Gem[x0][y0]->getLevel() > 0 || gem[x0][y0]->getType() == TYPES)
 			{
-				sftime += sf::seconds(2);
-				isSwap = true;
+				clicked = 0;
 			}
-			else isSwap = false;
-			clicked = 0;
-			gem[x0][y0]->updateTextrue(false);
-			gem[x1][y1]->updateTextrue(false);
+			else
+			{
+				gem[x0][y0]->updateTextrue(true);
+			}
 		}
-		else
+		else if (clicked == 2 && isMoving == false)
 		{
-			gem[x0][y0]->updateTextrue(false);
-			clicked = 1;
+			start = true;
+			x1 = mousePosition.x / TILESIZE;
+			y1 = mousePosition.y / TILESIZE;
+
+			if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
+			{
+				swap(gem, x0, y0, x1, y1);
+				if (match(gem, bg_Gem) == true)
+				{
+					sftime += sf::seconds(2);
+					isSwap = true;
+				}
+				else isSwap = false;
+				clicked = 0;
+				gem[x0][y0]->updateTextrue(false);
+				gem[x1][y1]->updateTextrue(false);
+			}
+			else
+			{
+				gem[x0][y0]->updateTextrue(false);
+				clicked = 1;
+			}
 		}
 	}
 	isMatch = false;
@@ -267,7 +270,7 @@ bool Game::gameEngine()
 				}
 			}
 		}
-		if (gem[SIZE_X - 1][SIZE_Y - 1]->getAlpha() <= 5)
+		if (gem[SIZE_X - 1][SIZE_Y - 1]->getAlpha() <= 10)
 		{
 			this->level++;
 			prepareBoard(level);
@@ -515,11 +518,11 @@ void Game::setTexts()
 }
 bool Game::gameDone()
 {
-	if (level == 1)
+	if (levelType == "points")
 	{
-		if (score < 1000) return false;
+		if (score < oldScore + 1000) return false;
 	}
-	else if (level == 2)
+	else if (levelType == "ice")
 	{
 		for (int i = 0; i < SIZE_X; i++)
 		{
@@ -532,7 +535,7 @@ bool Game::gameDone()
 			}
 		}
 	}
-	else if (level == 3 || level == 4)
+	else if(levelType == "background")
 	{
 		for (int i = 0; i < SIZE_X; i++)
 		{
