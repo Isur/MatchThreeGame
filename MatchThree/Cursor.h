@@ -3,6 +3,7 @@
 class Cursor
 {
 private:
+	sf::View view;
 	sf::Vector2f position;
 	sf::Texture texture;
 	sf::Sprite sprite;

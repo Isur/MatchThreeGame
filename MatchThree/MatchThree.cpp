@@ -11,15 +11,8 @@
 #include "Score.h"
 #include "Help.h"
 #include "MatchThree.h"
+#include "Map.h"
 #include "settings.h"
-
-void deleteObjects(Game *game, Menu *menu, Score *score, Help *help)
-{
-	delete game;
-	delete menu;
-	delete score;
-	delete help;
-}
 
 int main()
 {
@@ -32,8 +25,15 @@ int main()
 	Score *score = new Score;
 	Help *help = new Help;
 	Cursor *cursor = new Cursor;
-	
+	Map *map = new Map;
 	int frame = 0;
+	/*
+		0 - MENU
+		1 - GAME
+		2 - SCORE
+		3 - HELP
+		4 - MAP
+	*/
 	bool play = false;
 
 	while (window.isOpen())
@@ -67,6 +67,10 @@ int main()
 				break;
 			case 3:
 				frame = help->events(e, window);
+				break;
+			case 4:
+				frame = map->events(e, window);
+				break;
 			default:
 				break;
 
@@ -91,6 +95,9 @@ int main()
 		case 3:
 			help->drawHelp(window);
 			break;
+		case 4:
+			map->drawMap(window);
+			map->move();
 		default:
 			break;
 		}

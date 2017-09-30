@@ -53,7 +53,6 @@ void Game::prepareBoard(int level)
 	if(this->level <= 4) levelString.append(std::to_string(this->level));
 	else levelString.append("4");
 	levelString.append(".egg");
-	std::cout << levelString << "x\n";
 	fileLevel.open(levelString);
 	char levelChar[SIZE_X][SIZE_Y];
 	for (i = 0; i < SIZE_Y; i++)
