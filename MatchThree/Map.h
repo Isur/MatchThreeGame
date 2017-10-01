@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include "settings.h"
+#include "Game.h"
 class Map
 {
 private:
@@ -13,12 +14,13 @@ private:
 	int posX;
 	int posY;
 	int direction;
+	int done;
 
 public:
 	Map();
 	~Map();
 
-	int events(sf::Event e, sf::RenderWindow &window);
+	int events(sf::Event e, sf::RenderWindow &window, Game *game);
 	void drawMap(sf::RenderWindow &window);
 	void move();
 };

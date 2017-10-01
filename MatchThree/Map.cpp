@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Map.h"
-
+#include <fstream>
 Map::Map()
 {
 	view.reset(sf::FloatRect(0, 0, 550, 700));
@@ -33,7 +33,8 @@ Map::Map()
 	for (int i = 0; i < 20; i++)
 	{
 		circle[i].setTexture(mapLevel);
-		circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+		if( i < done-1) circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+		else  circle[i].setTextureRect(sf::IntRect(48, 0, 24, 24));
 		circle[i].setPosition(circlePosition[i]);
 	}
 	
@@ -80,7 +81,7 @@ void Map::move()
 
 }
 
-int Map::events(sf::Event e, sf::RenderWindow &window)
+int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 {
 	sf::Vector2f moved;
 	if (e.type == sf::Event::KeyPressed)
@@ -109,12 +110,40 @@ int Map::events(sf::Event e, sf::RenderWindow &window)
 			{
 				if (pos.y > circlePosition[i].y - posY*SHIFT && pos.y < circlePosition[i].y + 24 - posY * SHIFT)
 				{
-					circle[i].setTextureRect(sf::IntRect(24,0,24,24));
+					if(i > done-1) circle[i].setTextureRect(sf::IntRect(24,0,24,24));
+					else circle[i].setTextureRect(sf::IntRect(72, 0, 24, 24));
 				}
-				else circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+				else
+				{
+					if(i > done-1) circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+					else circle[i].setTextureRect(sf::IntRect(48, 0, 24, 24));
+				}
 
 			}
-			else circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+			else 
+			{ 
+				if (i > done-1) circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
+				else circle[i].setTextureRect(sf::IntRect(48, 0, 24, 24));
+			}
+		}
+	}
+	if (e.type == sf::Event::MouseButtonPressed)
+	{
+		sf::Vector2i pos = sf::Mouse::getPosition(window);
+		for (int i = 0; i < LEVELS; i++)
+		{
+
+			if (pos.x > circlePosition[i].x - posX * SHIFT && pos.x < circlePosition[i].x + 24 - posX * SHIFT)
+			{
+				if (pos.y > circlePosition[i].y - posY*SHIFT && pos.y < circlePosition[i].y + 24 - posY * SHIFT)
+				{
+					if (done >= i)
+					{
+						game->prepareBoard(i + 1);
+						return 1;
+					}
+				}
+			}
 		}
 	}
 	return 4;
@@ -122,6 +151,12 @@ int Map::events(sf::Event e, sf::RenderWindow &window)
 
 void Map::drawMap(sf::RenderWindow &window)
 {
+	std::ifstream save;
+	save.open("score/save.egg");
+	save >> done;
+	save.close();
+	if (done < 0) done = 0;
+	
 	window.setView(view);
 	window.draw(sprite);
 

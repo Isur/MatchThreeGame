@@ -23,7 +23,7 @@ Game::Game()
 	gameOverText.setFont(font);
 	gameOverText.setPosition(sf::Vector2f(100.0, 500.0));
 	gameOverInfoText.setFont(font);
-	gameOverInfoText.setPosition(sf::Vector2f(100.0, 50.0));
+	gameOverInfoText.setPosition(sf::Vector2f(100.0, 1.0));
 	start = false;
 	//score = 0;
 	prepareBoard(1);
@@ -45,7 +45,18 @@ void Game::prepareBoard(int level)
 	isMatch = false;
 	game = true;
 	clicked = 0;
-	if(this->level == 1) score = 0;
+	std::ifstream load;
+	load.open("score/save.egg");
+	load >> maxLevel;
+	load >> score;
+	load.close();
+	std::string scoreLoad("score/");
+	scoreLoad.append(std::to_string(level));
+	scoreLoad.append(".egg");
+	load.open(scoreLoad);
+	load >> maxScore;
+	load.close();
+	score = 0;
 	start = false;
 	done = false;
 	std::ifstream fileLevel;
@@ -513,13 +524,13 @@ void Game::setTexts()
 	{
 		gameOverText.setString("DONE!");
 	}
-	gameOverInfoText.setString("LEVEL: " + std::to_string(level));
+	gameOverInfoText.setString("LEVEL: " + std::to_string(level) + "\nHIGH SCORE: " + std::to_string(maxScore));
 }
 bool Game::gameDone()
 {
 	if (levelType == "points")
 	{
-		if (score < oldScore + 1000) return false;
+		if (score < oldScore + 2500) return false;
 	}
 	else if (levelType == "ice")
 	{
@@ -547,5 +558,21 @@ bool Game::gameDone()
 			}
 		}
 	}
+	
+	std::ofstream save;
+	save.open("score/save.egg");
+	if(level > maxLevel) save << level << std::endl;
+	else save << maxLevel << std::endl;
+	save.close();
+	std::ofstream saveScore;
+	std::string scoreFile("score/");
+	scoreFile.append(std::to_string(level));
+	scoreFile.append(".egg");
+	saveScore.open(scoreFile);
+	if (score > maxScore) saveScore << score;
+	else saveScore << maxScore;
+	saveScore.close();
+	
+
 	return true;
 }

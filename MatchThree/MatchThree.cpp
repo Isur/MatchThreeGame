@@ -54,10 +54,6 @@ int main()
 			{
 			case 0:
 				frame = menu->events(e, window);
-				if (frame == 1)
-				{
-					game->prepareBoard(1);
-				}
 				break;
 			case 1:
 				frame = game->events(e, window);
@@ -69,7 +65,7 @@ int main()
 				frame = help->events(e, window);
 				break;
 			case 4:
-				frame = map->events(e, window);
+				frame = map->events(e, window, game);
 				break;
 			default:
 				break;

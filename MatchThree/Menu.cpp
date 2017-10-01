@@ -96,7 +96,7 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 		{
 			if (mousePosition.y >= 300 && mousePosition.y <= 400)
 			{
-				return 1;
+				return 4;
 			}
 			else if (mousePosition.y >= 425 && mousePosition.y <= 525)
 			{
@@ -111,7 +111,7 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 		{
 			if (mousePosition.y >= 580 && mousePosition.y <= 580 + 100)
 			{
-				return 4;
+				return 3;
 			}
 		}
 	}

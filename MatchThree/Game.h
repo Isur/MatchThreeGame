@@ -17,9 +17,11 @@ private:
 	bool done;
 	int clicked;
 	int score;
+	int oldScore = 0;
+	int maxScore;
 	int x0, x1, y0, y1, i, j;
 	int level = 0;
-	int oldScore = 0;
+	int maxLevel;
 	std::string levelType;
 	sf::Time sftime;
 	sf::Clock clock;
