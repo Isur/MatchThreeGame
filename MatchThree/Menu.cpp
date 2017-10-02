@@ -3,6 +3,7 @@
 
 
 Menu::Menu()
+	:Windows()
 {
 	backgroundTexture.loadFromFile("images/menu.png");
 	backgroundSprite.setTexture(backgroundTexture);

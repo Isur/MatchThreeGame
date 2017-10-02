@@ -2,13 +2,12 @@
 #include <SFML\Graphics.hpp>
 #include "settings.h"
 #include "Game.h"
-class Map
+#include "Windows.h"
+class Map:public Windows
 {
 private:
 	sf::View view;
-	sf::Texture texture;
 	sf::Texture mapLevel;
-	sf::Sprite sprite;
 	sf::Sprite circle[LEVELS];
 	sf::Vector2f circlePosition[LEVELS];
 	int posX;

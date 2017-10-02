@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-class Menu
+#include "Windows.h"
+class Menu:public Windows
 {
-	sf::Texture backgroundTexture;
-	sf::Sprite backgroundSprite;
+	
 	sf::Texture textureButtons;
 	sf::Texture textureButtonsClicked;
 	sf::Sprite buttonsMenu[4];

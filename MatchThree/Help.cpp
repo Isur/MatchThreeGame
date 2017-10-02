@@ -3,6 +3,7 @@
 
 
 Help::Help()
+	:Windows()
 {
 	backgroundTexture.loadFromFile("images/backgroundHelp.png");
 	backgroundSprite.setTexture(backgroundTexture);

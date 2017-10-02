@@ -2,13 +2,10 @@
 #include "bgGem.h"
 
 
-bgGem::bgGem(bool movable, sf::Vector2f position, int type, int level)
-	:Object(movable, position)
+bgGem::bgGem(sf::Vector2f position, int type, int level)
+	:Object(position, type, level)
 {
-	this->position = position;
-	this->movable = movable;
-	this->type = type;
-	this->level = level;
+
 	this->texture.loadFromFile("images/tilesBg.png");
 	this->sprite.setTexture(texture);
 	this->sprite.setTextureRect(sf::IntRect(this->level * 40, 0, 40, 40));
@@ -21,19 +18,7 @@ bgGem::~bgGem()
 {
 }
 
-// GETTERS
-int bgGem::getLevel()
-{
-	return this->level;
-}
-int bgGem::getType()
-{
-	return this->type;
-}
-sf::Vector2f bgGem::getPosition()
-{
-	return this->position;
-}
+
 // SETTERS
 void bgGem::setLevel(int level)
 {
@@ -47,10 +32,6 @@ void bgGem::setType(int type)
 	{
 		this->texture.loadFromFile("images/tileBg.png");
 	}
-}
-void bgGem::setPosition(sf::Vector2f position)
-{
-	this->position = position;
 }
 //METHODS
 void bgGem::drawBgGem(sf::RenderWindow &window)

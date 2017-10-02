@@ -56,7 +56,7 @@ int main()
 				frame = menu->events(e, window);
 				break;
 			case 1:
-				frame = game->events(e, window);
+				frame = game->events(e, window, cursor);
 				break;
 			case 2:
 				frame = score->events(e, window);

@@ -1,28 +1,22 @@
 #pragma once
 #include<SFML\Graphics.hpp>
 #include "Object.h"
-class Gem : protected Object
+class Gem : public Object
 {
 private:
-	int type;
 	int match;
 	int value;
 	bool underBlock;
-	sf::Sprite sprite;
-	sf::Texture texture;
+
 
 public:
 	// CONSTRUCTORS
-	Gem(bool movable, sf::Vector2f position, int type);
+	Gem(sf::Vector2f position, int type);
 	Gem();
 	~Gem();
 	// GETTERS
-	int getType();
-	int getMatch();
-	int getAlpha();
-	int getValue();
-	sf::Vector2f getPosition();
-	sf::Vector2f getOldPosition();
+	int getMatch() {return this->match; }
+	int getValue() { return this->value; }
 	bool getChecked() { return this->checked; }
 	bool getUnderBlock() { return this->underBlock; }
 	// SETTERS

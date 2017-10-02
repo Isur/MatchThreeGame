@@ -9,7 +9,9 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+
 Game::Game()
+	:Windows()
 {
 	backgroundTexture.loadFromFile("images/bg.png");
 	backgroundSprite.setTexture(backgroundTexture);
@@ -17,156 +19,138 @@ Game::Game()
 	offset.x = OFFSET_X;
 	offset.y = OFFSET_Y;
 	timeText.setFont(font);
-	timeText.setPosition(sf::Vector2f(100.0, 600.0));
+	timeText.setPosition(sf::Vector2f(100.0, 650.0));
 	scoreText.setFont(font);
-	scoreText.setPosition(sf::Vector2f(100.0, 550.0));
+	scoreText.setPosition(sf::Vector2f(100.0, 600.0));
 	gameOverText.setFont(font);
-	gameOverText.setPosition(sf::Vector2f(100.0, 500.0));
+	gameOverText.setPosition(sf::Vector2f(300.0, 1.0));
 	gameOverInfoText.setFont(font);
 	gameOverInfoText.setPosition(sf::Vector2f(100.0, 1.0));
 	start = false;
-	//score = 0;
-	prepareBoard(1);
 }
 Game::~Game()
 {
 }
-// METHODS
-
-void Game::prepareBoard(int level)
+// EVENTS
+int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 {
-	int i, j, tempType;
-	this->oldScore = score;
-	this->level = level;
-	srand((unsigned int)time(NULL));
-	sf::Vector2f position;
-	isMoving = false;
-	isSwap = true;
-	isMatch = false;
-	game = true;
-	clicked = 0;
-	std::ifstream load;
-	load.open("score/save.egg");
-	load >> maxLevel;
-	load >> score;
-	load.close();
-	std::string scoreLoad("score/");
-	scoreLoad.append(std::to_string(level));
-	scoreLoad.append(".egg");
-	load.open(scoreLoad);
-	load >> maxScore;
-	load.close();
-	score = 0;
-	start = false;
-	done = false;
-	std::ifstream fileLevel;
-	std::string levelString("levels/");
-	if(this->level <= 4) levelString.append(std::to_string(this->level));
-	else levelString.append("4");
-	levelString.append(".egg");
-	fileLevel.open(levelString);
-	char levelChar[SIZE_X][SIZE_Y];
-	for (i = 0; i < SIZE_Y; i++)
+	if (e.type == sf::Event::MouseMoved)
 	{
-		std::getline(fileLevel, levelString);
-		for (j = 0; j < SIZE_X; j++)
-		{
-			levelChar[j][i] = levelString[j];
-		}
+		if (isSkill == true) cursor->setTexture(activeSkill);
+		else cursor->setDefaultTexture();
 	}
-	std::getline(fileLevel, levelString);
-	fileLevel.close();
-	levelType = levelString;
-	for (i = 0; i < SIZE_X; i++)
-	{
-		for (j = 0; j < SIZE_Y; j++)
-		{
-			// 1 - ONLY GEM
-			// 2 - GEM WITH BACKGROUND
-			// 3 - FROZEN GEM
-			// 4 - FROZEN GEM WITH BACKGROUND
-			tempType = rand() % TYPES;
-			position.x = (float) offset.x + i*TILESIZE;
-			position.y = (float) offset.y + j*TILESIZE;
-			
-			gem[i][j] = new Gem(true, position, tempType);
-			switch (levelChar[i][j])
-			{
-			case '1':
-				bg_Gem[i][j] = new bgGem(true, position, 0, 0);
-				fg_Gem[i][j] = new FgGem(true, 1, position, 0);
-				break;
-			case '2':
-				bg_Gem[i][j] = new bgGem(true, position, 1, 2);
-				fg_Gem[i][j] = new FgGem(true, 1, position, 0);
-				break;
-			case '3':
-				bg_Gem[i][j] = new bgGem(true, position, 0, 0);
-				fg_Gem[i][j] = new FgGem(true, 1, position, 2);
-				break;
-			case '4':
-				bg_Gem[i][j] = new bgGem(true, position, 1, 2);
-				fg_Gem[i][j] = new FgGem(true, 1, position, 2);
-				break;
-
-			}
-			gem[i][j]->setAlpha(0);
-			bg_Gem[i][j]->setAlpha(0);
-			fg_Gem[i][j]->setAlpha(0);
-		}
-	}	
-	sftime = sf::seconds(60);
-}
-void Game::drawing(sf::RenderWindow &window)
-{
-	int i, j;
-	window.draw(backgroundSprite);
-	if (done == true)
-	{
-		window.draw(gameOverText);
-	}
-	window.draw(gameOverInfoText);
-	window.draw(scoreText);
-	window.draw(timeText);
-	for (i = 0; i < SIZE_X; i++)
-	{
-		for (j = 0; j < SIZE_Y; j++)
-		{
-			bg_Gem[i][j]->drawBgGem(window);
-			gem[i][j]->drawGem(window);
-			fg_Gem[i][j]->drawFgGem(window);
-		}
-	}
-}
-bool Game::finishGame()
-{
-	if (sftime <= sf::seconds(0))
-	{
-		game = false;
-		start = false;
-		sftime = sf::seconds(0);
-		Score *scoreTable = new Score;
-		scoreTable->checkIfTop(score);
-		delete scoreTable;
-	}
-	else game = true;
-	return game;
-}
-int Game::events(sf::Event e, sf::RenderWindow &window)
-{
 	if (e.type == sf::Event::MouseButtonPressed)
 	{
-		mousePosition = sf::Mouse::getPosition(window);
-		if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
-			mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
-			mousePosition.x > offset.x &&
-			mousePosition.y > offset.y)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 		{
-			if (isMoving == false)
+			for (i = 0; i < SIZE_X; i++)
 			{
-				clicked++;
+				for (j = 0; j < SIZE_X; j++)
+				{
+					gem[i][j]->updateTextrue(false);
+				}
 			}
-			mousePosition -= offset;
+			sf::Vector2i mp = sf::Mouse::getPosition(window);
+			if (mp.x <= offset.x + TILESIZE*SIZE_X &&
+				mp.y <= offset.y + TILESIZE*SIZE_Y &&
+				mp.x > offset.x &&
+				mp.y > offset.y)
+			{
+				mp -= offset;
+				
+				if (isSkill == true)
+				{
+					cursor->setTexture(activeSkill);
+					int m, n;
+					x0 = mp.x / TILESIZE;
+					y0 = mp.y / TILESIZE;
+
+					if (activeSkill == 0)
+					{
+						gem[x0][y0]->updateTextrue(true);
+					}
+					else if (activeSkill == 1)
+					{
+						if (x0 > 0 && y0 > 0 && x0 < SIZE_X - 1 && y0 < SIZE_Y - 1)
+						{
+							for (int i = x0 - 1; i <= x0 + 1; i++)
+							{
+								for (int j = y0 - 1; j <= y0 + 1; j++)
+								{
+									gem[i][j]->updateTextrue(true);
+								}
+							}
+						}
+					}
+					else if (activeSkill == 2)
+					{
+						int temp = gem[x0][y0]->getType();
+						for (int i = 0; i < SIZE_X; i++)
+						{
+							for (int j = 0; j < SIZE_Y; j++)
+							{
+								if (gem[i][j]->getType() == temp)
+								{
+									gem[i][j]->updateTextrue(true);
+								}
+							}
+						}
+					}
+					else if (activeSkill == 3)
+					{
+						for (int i = 0; i < SIZE_Y; i++)
+						{
+							gem[x0][i]->updateTextrue(true);
+						}
+					}
+					else if (activeSkill == 4)
+					{
+						for (int i = 0; i < SIZE_X; i++)
+						{
+							gem[i][y0]->updateTextrue(true);
+						}
+					}
+				}
+				else
+				{
+					cursor->setDefaultTexture();
+				}
+			}
+			else
+			{
+				cursor->setDefaultTexture();
+				isSkill = false;
+			}
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			mousePosition = sf::Mouse::getPosition(window);
+			for (int i = 0; i < 5; i++)
+			{
+				if (mousePosition.y > OFFSET_Y + SIZE_Y*TILESIZE + 10 && mousePosition.y < OFFSET_Y + SIZE_Y*TILESIZE + 10 + TILESIZE)
+				{
+					if (mousePosition.x > OFFSET_X + 2 * i*TILESIZE && mousePosition.x < OFFSET_X + 2 * i*TILESIZE + TILESIZE)
+					{
+						if (skill[i]->getQuantity() > 0 && start == true)
+						{
+							activeSkill = i;
+							isSkill = true;
+						}
+						break;
+					}
+				}
+			}
+			if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
+				mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
+				mousePosition.x > offset.x &&
+				mousePosition.y > offset.y)
+			{
+				if (isMoving == false)
+				{
+					clicked++;
+				}
+				mousePosition -= offset;
+			}
 		}
 	}
 	if (e.type == sf::Event::KeyPressed)
@@ -185,6 +169,102 @@ int Game::events(sf::Event e, sf::RenderWindow &window)
 		}
 	return 1;
 }
+// LOAD GAME
+void Game::prepareBoard(int level)
+{
+	int i, j, tempType;	
+	this->level = level;
+	srand((unsigned int)time(NULL));
+	sf::Vector2f position;
+	// INITIAL SETTINGS
+	isMoving = false;
+	isSwap = true;
+	isMatch = false;
+	start = false;
+	done = false;
+	game = true;
+	isSkill = false;
+	clicked = 0;
+	score = 0;
+	// SKILLS
+	for (i = 0; i < 5; i++)
+	{
+		skill[i] = new Skills(i);
+	}
+	// LOAD SAVE / SCORE
+	std::ifstream load;
+	load.open("score/save.egg");
+	load >> maxLevel;
+	load >> score;
+	load.close();
+	std::string scoreLoad("score/");
+	scoreLoad.append(std::to_string(level));
+	scoreLoad.append(".egg");
+	load.open(scoreLoad);
+	load >> maxScore;
+	load.close();
+	
+	// LOAD LEVEL
+	std::ifstream fileLevel;
+	std::string levelString("levels/");
+	if(this->level <= 4) levelString.append(std::to_string(this->level));	
+	else levelString.append("4");
+	levelString.append(".egg");
+	fileLevel.open(levelString);
+	char levelChar[SIZE_X][SIZE_Y];
+	for (i = 0; i < SIZE_Y; i++)
+	{
+		std::getline(fileLevel, levelString);
+		for (j = 0; j < SIZE_X; j++)
+		{
+			levelChar[j][i] = levelString[j];
+		}
+	}
+	std::getline(fileLevel, levelString);
+	levelType = levelString;
+	fileLevel.close();
+	// CREATING LEVEL
+	for (i = 0; i < SIZE_X; i++)
+	{
+		for (j = 0; j < SIZE_Y; j++)
+		{
+			// 1 - ONLY GEM
+			// 2 - GEM WITH BACKGROUND
+			// 3 - FROZEN GEM
+			// 4 - FROZEN GEM WITH BACKGROUND
+			tempType = rand() % TYPES;
+			position.x = (float) offset.x + i*TILESIZE;
+			position.y = (float) offset.y + j*TILESIZE;
+			
+			gem[i][j] = new Gem(position, tempType);
+			switch (levelChar[i][j])
+			{
+			case '1':
+				bg_Gem[i][j] = new bgGem(position, 0, 0);
+				fg_Gem[i][j] = new FgGem(1, position, 0);
+				break;
+			case '2':
+				bg_Gem[i][j] = new bgGem(position, 1, 2);
+				fg_Gem[i][j] = new FgGem(1, position, 0);
+				break;
+			case '3':
+				bg_Gem[i][j] = new bgGem(position, 0, 0);
+				fg_Gem[i][j] = new FgGem(1, position, 2);
+				break;
+			case '4':
+				bg_Gem[i][j] = new bgGem(position, 1, 2);
+				fg_Gem[i][j] = new FgGem(1, position, 2);
+				break;
+
+			}
+			gem[i][j]->setAlpha(0);
+			bg_Gem[i][j]->setAlpha(0);
+			fg_Gem[i][j]->setAlpha(0);
+		}
+	}	
+	sftime = sf::seconds(60);
+}
+//ENGINE
 bool Game::gameEngine()
 {
 	if (start == false)
@@ -208,7 +288,21 @@ bool Game::gameEngine()
 		mousePosition.x > 0 &&
 		mousePosition.y > 0)
 	{
-		if (clicked == 1 && game == true && isMoving == false)
+		if (isSkill == true)
+		{
+			x0 = mousePosition.x / TILESIZE;
+			y0 = mousePosition.y / TILESIZE;
+			useSkill();
+			clicked = 0;
+			for (i = 0; i < SIZE_X; i++)
+			{
+				for (j = 0; j < SIZE_X; j++)
+				{
+					gem[i][j]->updateTextrue(false);
+				}
+			}
+		}
+		else if (clicked == 1 && game == true && isMoving == false)
 		{
 			x0 = mousePosition.x / TILESIZE;
 			y0 = mousePosition.y / TILESIZE;
@@ -266,6 +360,7 @@ bool Game::gameEngine()
 	if (isMoving == false && done == false)
 	{
 		updateGrid(gem);
+		skills();
 	}
 	else if (done == true)
 	{
@@ -295,6 +390,20 @@ bool Game::gameEngine()
 	clock.restart();
 
 	return finishGame();
+}
+bool Game::finishGame()
+{
+	if (sftime <= sf::seconds(0))
+	{
+		game = false;
+		start = false;
+		sftime = sf::seconds(0);
+		Score *scoreTable = new Score;
+		scoreTable->checkIfTop(score);
+		delete scoreTable;
+	}
+	else game = true;
+	return game;
 }
 void Game::swap(Gem *gem[][SIZE_Y], int x0, int y0, int x1, int y1)
 {
@@ -398,6 +507,7 @@ void Game::updateGrid(Gem *gem[][SIZE_Y])
 {
 	int i, j;
 	done = gameDone();
+
 	if (done == false)
 	{
 		for (i = 0; i < SIZE_X; i++)
@@ -516,21 +626,11 @@ bool Game::checkPosibleMove(Gem *gem[][SIZE_Y])
 	}
 	return false;
 }
-void Game::setTexts()
-{
-	timeText.setString("TIME: " + std::to_string((int)sftime.asSeconds()));
-	scoreText.setString("SCORE: " + std::to_string(score));
-	if (done == true)
-	{
-		gameOverText.setString("DONE!");
-	}
-	gameOverInfoText.setString("LEVEL: " + std::to_string(level) + "\nHIGH SCORE: " + std::to_string(maxScore));
-}
 bool Game::gameDone()
 {
 	if (levelType == "points")
 	{
-		if (score < oldScore + 2500) return false;
+		if (score < 2500) return false;
 	}
 	else if (levelType == "ice")
 	{
@@ -559,6 +659,7 @@ bool Game::gameDone()
 		}
 	}
 	
+	// SAVE SCORE / LEVEL
 	std::ofstream save;
 	save.open("score/save.egg");
 	if(level > maxLevel) save << level << std::endl;
@@ -575,4 +676,118 @@ bool Game::gameDone()
 	
 
 	return true;
+}
+void Game::skills()
+{
+	if (score == 0)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			oldScore[i] = 0;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			if (score > oldScore[i] + 1000 * (i + 1)) { skill[i]->setQuantity(skill[i]->getQuantity() + 1); oldScore[i] = score; }
+		}
+	}
+
+}
+void Game::useSkill()
+{
+	if (activeSkill == 0)
+	{
+		gem[x0][y0]->increaseMatch();
+		skill[0]->setQuantity(skill[0]->getQuantity() - 1);
+		isSkill = false;
+	}
+	if (activeSkill == 1)
+	{
+		if (x0 > 0 && y0 > 0 && x0 < SIZE_X - 1 && y0 < SIZE_Y - 1)
+		{
+			for (int i = x0 - 1; i <= x0 + 1; i++)
+			{
+				for (int j = y0 - 1; j <= y0 + 1; j++)
+				{
+					gem[i][j]->increaseMatch();
+				}
+			}
+			skill[1]->setQuantity(skill[1]->getQuantity() - 1);
+			isSkill = false;
+		}
+	}
+	if (activeSkill == 2)
+	{
+		int temp = gem[x0][y0]->getType();
+		for (int i = 0; i < SIZE_X; i++)
+		{
+			for (int j = 0; j < SIZE_Y; j++)
+			{
+				if (gem[i][j]->getType() == temp)
+				{
+					gem[i][j]->increaseMatch();
+				}
+			}
+		}
+		skill[2]->setQuantity(skill[2]->getQuantity() - 1);
+		isSkill = false;
+	}
+	if (activeSkill == 3)
+	{
+		for (int i = 0; i < SIZE_Y; i++)
+		{
+			gem[x0][i]->increaseMatch();
+		}
+		skill[3]->setQuantity(skill[3]->getQuantity() - 1);
+		isSkill = false;
+	}
+	if (activeSkill == 4)
+	{
+		for (int i = 0; i < SIZE_X; i++)
+		{
+			gem[i][y0]->increaseMatch();
+		}
+		skill[4]->setQuantity(skill[4]->getQuantity() - 1);
+		isSkill = false;
+	}
+	
+
+}
+// DRAW
+void Game::setTexts()
+{
+	timeText.setString("TIME: " + std::to_string((int)sftime.asSeconds()));
+	scoreText.setString("SCORE: " + std::to_string(score));
+	if (done == true)
+	{
+		gameOverText.setString("DONE!");
+	}
+	gameOverInfoText.setString("LEVEL: " + std::to_string(level) + "\nHIGH SCORE: " + std::to_string(maxScore));
+}
+void Game::drawing(sf::RenderWindow &window)
+{
+	int i, j;
+	window.draw(backgroundSprite);
+	for (i = 0; i < 5; i++)
+	{
+		skill[i]->drawSkills(window);
+	}
+	if (done == true)
+	{
+		window.draw(gameOverText);
+	}
+	window.draw(gameOverInfoText);
+	window.draw(scoreText);
+	window.draw(timeText);
+	for (i = 0; i < SIZE_X; i++)
+	{
+		for (j = 0; j < SIZE_Y; j++)
+		{
+			bg_Gem[i][j]->drawBgGem(window);
+			gem[i][j]->drawGem(window);
+			fg_Gem[i][j]->drawFgGem(window);
+		}
+	}
 }

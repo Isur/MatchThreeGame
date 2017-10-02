@@ -2,13 +2,9 @@
 #include "FgGem.h"
 
 
-FgGem::FgGem(bool movable, int type, sf::Vector2f position, int level)
-	:Object(movable, position)
+FgGem::FgGem(int type, sf::Vector2f position, int level)
+	:Object(position, type, level)
 {
-	this->type = type;
-	this->movable = movable;
-	this->position = position;
-	this->level = level;
 	if (this->type == 1) 
 	{
 		this->texture.loadFromFile("images/tilesFg.png");

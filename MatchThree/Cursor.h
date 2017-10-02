@@ -14,5 +14,8 @@ public:
 
 	void move(sf::Vector2i position);
 	void drawCursor(sf::RenderWindow &window);
+
+	void setTexture(int type);
+	void setDefaultTexture();
 };
 

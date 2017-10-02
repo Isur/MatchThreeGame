@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML\Graphics.hpp>
-class Help
+#include "Windows.h"
+class Help:public Windows
 {
 private:
-	sf::Texture backgroundTexture;
-	sf::Sprite backgroundSprite;
+
 	sf::Texture buttonTexture;
 	sf::Sprite buttonSprite;
 

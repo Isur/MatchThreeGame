@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Map.h"
 #include <fstream>
-Map::Map()
+Map::Map() 
+	:Windows()
 {
 	view.reset(sf::FloatRect(0, 0, 550, 700));
-	texture.loadFromFile("images/map.png");
+	backgroundTexture.loadFromFile("images/map.png");
 	mapLevel.loadFromFile("images/mapLevel.png");
-	sprite.setTexture(texture);
+	backgroundSprite.setTexture(backgroundTexture);
 
 	circlePosition[0] = sf::Vector2f(279, 337);
 	circlePosition[1] = sf::Vector2f(358, 326);
@@ -56,7 +57,7 @@ void Map::move()
 	}
 	else if (direction == 1)
 	{
-		if (posX < (texture.getSize().x - view.getSize().x) / SHIFT - 1)
+		if (posX < (backgroundTexture.getSize().x - view.getSize().x) / SHIFT - 1)
 		{
 			view.move(SHIFT, 0);
 			posX++;
@@ -158,7 +159,7 @@ void Map::drawMap(sf::RenderWindow &window)
 	if (done < 0) done = 0;
 	
 	window.setView(view);
-	window.draw(sprite);
+	window.draw(backgroundSprite);
 
 	for(int i = 0; i < LEVELS; i++) window.draw(circle[i]);
 }

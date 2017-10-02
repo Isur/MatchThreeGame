@@ -4,11 +4,14 @@
 #include "bgGem.h"
 #include "settings.h"
 #include "FgGem.h"
-class Game
+#include "Windows.h"
+#include "Skills.h"
+#include "Object.h"
+#include "Cursor.h"
+class Game:public Windows
 {
 private:
-	sf::Texture backgroundTexture;
-	sf::Sprite backgroundSprite;
+
 	bool isMoving;
 	bool isSwap;
 	bool isMatch;
@@ -17,11 +20,13 @@ private:
 	bool done;
 	int clicked;
 	int score;
-	int oldScore = 0;
+	int oldScore[5];
 	int maxScore;
 	int x0, x1, y0, y1, i, j;
-	int level = 0;
+	int level;
 	int maxLevel;
+	int activeSkill;
+	bool isSkill;
 	std::string levelType;
 	sf::Time sftime;
 	sf::Clock clock;
@@ -33,6 +38,7 @@ private:
 	Gem *gem[SIZE_X][SIZE_Y];
 	bgGem *bg_Gem[SIZE_X][SIZE_Y];
 	FgGem *fg_Gem[SIZE_X][SIZE_Y];
+	Skills *skill[5];
 
 	sf::Vector2i offset;
 	sf::Vector2i mousePosition;
@@ -47,6 +53,8 @@ private:
 	bool checkPosibleMove(Gem *gem[][SIZE_Y]);
 	void setTexts();
 	bool gameDone();
+	void skills();
+	void useSkill();
 public:
 	Game();
 	~Game();
@@ -57,7 +65,7 @@ public:
 
 	// METHODS
 	void prepareBoard(int level);
-	int events(sf::Event e, sf::RenderWindow &window);
+	int events(sf::Event e, sf::RenderWindow &window, Cursor *cursor);
 	void drawing(sf::RenderWindow &window);
 	bool gameEngine();
 

@@ -2,13 +2,10 @@
 #include "Gem.h"
 
 // CONTRUCTIONS
-Gem::Gem(bool movable, sf::Vector2f position, int type)
-	:Object(movable, position)
+Gem::Gem(sf::Vector2f position, int type)
+	:Object(position, type)
 {
-	this->type = type;
-	this->position = position;
 	this->value = (type+1) * 10;
-	this->movable = movable;
 	this->texture.loadFromFile("images/tiles.png");
 	this->sprite.setPosition(position);
 	this->sprite.setTexture(texture);
@@ -28,30 +25,6 @@ Gem::~Gem()
 {
 }
 // GETTERS
-int Gem::getValue()
-{
-	return this->value;
-}
-int Gem::getMatch()
-{
-	return this->match;
-}
-int Gem::getAlpha()
-{
-	return this->alpha;
-}
-int Gem::getType()
-{
-	return this->type;
-}
-sf::Vector2f Gem::getOldPosition()
-{
-	return this->oldPosition;
-}
-sf::Vector2f Gem::getPosition()
-{
-	return this->position;
-}
 
 // SETTERS
 void Gem::setTypeNotSprite(int type)
