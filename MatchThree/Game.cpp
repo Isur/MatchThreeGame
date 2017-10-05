@@ -61,7 +61,6 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 				if (isSkill == true)
 				{
 					cursor->setTexture(activeSkill);
-					int m, n;
 					x0 = mp.x / TILESIZE;
 					y0 = mp.y / TILESIZE;
 

@@ -9,7 +9,7 @@ Skills::Skills(int type)
 	font.loadFromFile("font.ttf");
 	text.setFont(font);
 	
-	position = sf::Vector2f(OFFSET_X + 2*type*TILESIZE, OFFSET_Y + SIZE_Y*TILESIZE + 10);
+	position = sf::Vector2f((float)OFFSET_X + 2.0f*type*TILESIZE,(float) OFFSET_Y + SIZE_Y*TILESIZE + 10.0f);
 
 	texture.loadFromFile("images/skills.png");
 	sprite.setPosition(position);
