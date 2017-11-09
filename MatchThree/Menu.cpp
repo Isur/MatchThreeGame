@@ -22,6 +22,19 @@ Menu::Menu()
 	buttonsMenu[1].setPosition(sf::Vector2f(138,425));
 	buttonsMenu[2].setPosition(sf::Vector2f(138,550));
 	buttonsMenu[3].setPosition(sf::Vector2f(430,580));
+
+	buttonHoverBuffer.loadFromFile("sounds/hover.wav");
+	buttonHoverSound.setBuffer(buttonHoverBuffer);
+
+	clickBuffer.loadFromFile("sounds/click.wav");
+	clickSound.setBuffer(clickBuffer);
+
+	music.openFromFile("sounds/menu_music.wav");
+	music.setVolume(20);
+	music.setLoop(true);
+	isPlaying = false;
+
+	isButtonHovered = false;
 }
 Menu::~Menu()
 {
@@ -34,6 +47,9 @@ void Menu::drawMenu(sf::RenderWindow &window)
 	{
 		window.draw(buttonsMenu[i]);
 	}
+
+	// music :)
+	if (!isPlaying) { music.play(); isPlaying = true; }
 }
 
 void Menu::imagesUpdate(int i, bool clicked)
@@ -61,18 +77,22 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 			if (mousePosition.y >= 300 && mousePosition.y <= 400)
 			{
 				imagesUpdate(0, true);
+				if (!isButtonHovered) { buttonHoverSound.play(); isButtonHovered = true; }
 			}
 			else if (mousePosition.y >= 425 && mousePosition.y <= 525)
 			{
 				imagesUpdate(1, true);
+				if (!isButtonHovered) { buttonHoverSound.play(); isButtonHovered = true; }
 			}
 			else if (mousePosition.y >= 550 && mousePosition.y <= 650)
 			{
 				imagesUpdate(2, true);
+				if (!isButtonHovered) { buttonHoverSound.play(); isButtonHovered = true; }
 			}
 			else
 			{
 				imagesUpdate(true);
+				isButtonHovered = false;
 			}
 		}
 		else if (mousePosition.x >= 430 && mousePosition.x <= 430+100)
@@ -80,23 +100,29 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 			if (mousePosition.y >= 580 && mousePosition.y <= 580 + 100)
 			{
 				imagesUpdate(3, true);
+				if (!isButtonHovered) { buttonHoverSound.play(); isButtonHovered = true; }
 			}
 			else
 			{
 				imagesUpdate(true);
+				isButtonHovered = false;
 			}
 		}
 		else 
 		{
 			imagesUpdate(true);
+			isButtonHovered = false;
 		}
 	}
 	if (e.type == sf::Event::MouseButtonPressed) 
 	{
+		clickSound.play();
+
 		if (mousePosition.x >= 138 && mousePosition.x <= 138 + 275)
 		{
 			if (mousePosition.y >= 300 && mousePosition.y <= 400)
 			{
+				pauseMusic();
 				return 4;
 			}
 			else if (mousePosition.y >= 425 && mousePosition.y <= 525)
@@ -117,4 +143,10 @@ int Menu::events(sf::Event e, sf::RenderWindow &window)
 		}
 	}
 	return 0;
+}
+
+void Menu::pauseMusic()
+{
+	music.stop();
+	isPlaying = false;
 }

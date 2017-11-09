@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 class Score
 {
 private:
@@ -11,6 +12,9 @@ private:
 	sf::Text text[10];
 	int score[10];
 	void updateImage(bool clicked);
+
+	sf::SoundBuffer clickBuffer;
+	sf::Sound clickSound;
 public:
 	Score();
 	~Score();

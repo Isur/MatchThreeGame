@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include "Windows.h"
 class Menu:public Windows
 {
@@ -9,6 +10,15 @@ class Menu:public Windows
 	sf::Sprite buttonsMenu[4];
 
 	sf::Vector2i mousePosition;
+
+	sf::SoundBuffer clickBuffer;
+	sf::Sound clickSound;
+	sf::SoundBuffer buttonHoverBuffer;
+	sf::Sound buttonHoverSound;
+	sf::Music music;
+	bool isButtonHovered;
+	bool isPlaying;
+	void pauseMusic();
 
 	void imagesUpdate(int i, bool clicked);
 	void imagesUpdate(bool out);

@@ -42,6 +42,16 @@ Map::Map()
 	posX = 0;
 	posY = 0;
 
+	clickBuffer.loadFromFile("sounds/click.wav");
+	clickSound.setBuffer(clickBuffer);
+	buttonHoverBuffer.loadFromFile("sounds/hover.wav");
+	buttonHoverSound.setBuffer(buttonHoverBuffer);
+	for (bool x : isButtonHovered) { x = false; }
+
+	music.openFromFile("sounds/map_music.wav");
+	music.setLoop(true);
+	music.setVolume(40);
+	isPlaying = false;
 }
 
 
@@ -89,6 +99,7 @@ int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
+			pauseMusic();
 			return 0;
 		}
 	}
@@ -113,11 +124,13 @@ int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 				{
 					if(i > done-1) circle[i].setTextureRect(sf::IntRect(24,0,24,24));
 					else circle[i].setTextureRect(sf::IntRect(72, 0, 24, 24));
+					if (!isButtonHovered[i]) { buttonHoverSound.play(); isButtonHovered[i] = true; }
 				}
 				else
 				{
 					if(i > done-1) circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
 					else circle[i].setTextureRect(sf::IntRect(48, 0, 24, 24));
+					isButtonHovered[i] = false;
 				}
 
 			}
@@ -125,11 +138,14 @@ int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 			{ 
 				if (i > done-1) circle[i].setTextureRect(sf::IntRect(0, 0, 24, 24));
 				else circle[i].setTextureRect(sf::IntRect(48, 0, 24, 24));
+				isButtonHovered[i] = false;
 			}
 		}
 	}
 	if (e.type == sf::Event::MouseButtonPressed)
 	{
+		clickSound.play();
+
 		sf::Vector2i pos = sf::Mouse::getPosition(window);
 		for (int i = 0; i < LEVELS; i++)
 		{
@@ -141,6 +157,7 @@ int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 					if (done >= i)
 					{
 						game->prepareBoard(i + 1);
+						pauseMusic();
 						return 1;
 					}
 				}
@@ -148,6 +165,12 @@ int Map::events(sf::Event e, sf::RenderWindow &window, Game *game)
 		}
 	}
 	return 4;
+}
+
+void Map::pauseMusic()
+{
+	music.stop();
+	isPlaying = false;
 }
 
 void Map::drawMap(sf::RenderWindow &window)
@@ -162,4 +185,6 @@ void Map::drawMap(sf::RenderWindow &window)
 	window.draw(backgroundSprite);
 
 	for(int i = 0; i < LEVELS; i++) window.draw(circle[i]);
+
+	if (!isPlaying) { music.play(); isPlaying = true; }
 }

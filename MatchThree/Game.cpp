@@ -27,6 +27,9 @@ Game::Game()
 	gameOverInfoText.setFont(font);
 	gameOverInfoText.setPosition(sf::Vector2f(100.0, 1.0));
 	start = false;
+
+	if (!buffer.loadFromFile("sounds/gem_move_sound.wav"));
+	sound.setBuffer(buffer);
 }
 Game::~Game()
 {
@@ -327,6 +330,7 @@ bool Game::gameEngine()
 				{
 					sftime += sf::seconds(2);
 					isSwap = true;
+					sound.play();
 				}
 				else isSwap = false;
 				clicked = 0;
