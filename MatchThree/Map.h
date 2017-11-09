@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include "settings.h"
 #include "Game.h"
 #include "Windows.h"
@@ -14,6 +15,16 @@ private:
 	int posY;
 	int direction;
 	int done;
+
+	sf::SoundBuffer clickBuffer;
+	sf::Sound clickSound;
+	sf::SoundBuffer buttonHoverBuffer;
+	sf::Sound buttonHoverSound;
+	bool isButtonHovered[LEVELS];
+	bool isPlaying;
+	sf::Music music;
+
+	void pauseMusic();
 
 public:
 	Map();

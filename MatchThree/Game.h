@@ -1,5 +1,6 @@
 #pragma once
 #include<SFML\Graphics.hpp>
+#include<SFML\Audio.hpp>
 #include "Gem.h"
 #include "bgGem.h"
 #include "settings.h"
@@ -55,6 +56,9 @@ private:
 	bool gameDone();
 	void skills();
 	void useSkill();
+
+	sf::Sound sound;
+	sf::SoundBuffer buffer;
 public:
 	Game();
 	~Game();

@@ -11,6 +11,9 @@ Help::Help()
 	buttonSprite.setTexture(buttonTexture);
 	buttonSprite.setTextureRect(sf::IntRect(0, 0, 275, 100));
 	buttonSprite.setPosition(sf::Vector2f(250, 580));
+
+	clickBuffer.loadFromFile("sounds/click.wav");
+	clickSound.setBuffer(clickBuffer);
 }
 
 
@@ -49,6 +52,8 @@ int Help::events(sf::Event e, sf::RenderWindow &window)
 
 	if (e.type == sf::Event::MouseButtonPressed)
 	{
+		clickSound.play();
+
 		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 		if (mousePosition.x >= 250 && mousePosition.x <= 250 + 275)
 		{

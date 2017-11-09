@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 #include "Windows.h"
 class Help:public Windows
 {
@@ -7,6 +8,9 @@ private:
 
 	sf::Texture buttonTexture;
 	sf::Sprite buttonSprite;
+
+	sf::SoundBuffer clickBuffer;
+	sf::Sound clickSound;
 
 	void Help::updateImage(bool clicked);
 public:

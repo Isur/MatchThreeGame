@@ -25,7 +25,8 @@ Score::Score()
 		pos.y += 50;
 	}
 
-
+	clickBuffer.loadFromFile("sounds/click.wav");
+	clickSound.setBuffer(clickBuffer);
 }
 
 
@@ -78,6 +79,8 @@ int Score::events(sf::Event e, sf::RenderWindow & window)
 	}
 	if (e.type == sf::Event::MouseButtonPressed)
 	{
+		clickSound.play();
+
 		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 		if (mousePosition.x >= 250 && mousePosition.x <= 250 + 275)
 		{
