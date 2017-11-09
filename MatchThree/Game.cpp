@@ -28,12 +28,32 @@ Game::Game()
 	gameOverInfoText.setPosition(sf::Vector2f(100.0, 1.0));
 	start = false;
 
-	if (!buffer.loadFromFile("sounds/gem_move_sound.wav"));
-	sound.setBuffer(buffer);
+	gemBuffer.loadFromFile("sounds/gem_move_sound.wav");
+	gemSound.setBuffer(gemBuffer);
+	hammerBuffer.loadFromFile("sounds/hammer.wav");
+	hammerSound.setBuffer(hammerBuffer);
+	boomBuffer.loadFromFile("sounds/boom.wav");
+	boomSound.setBuffer(boomBuffer);
+	lightningBuffer.loadFromFile("sounds/lightning.wav");
+	lightningSound.setBuffer(lightningBuffer);
+	lavaBuffer.loadFromFile("sounds/lava.wav");
+	lavaSound.setBuffer(lavaBuffer);
+
+	music.openFromFile("sounds/level_music.wav");
+	music.setLoop(true);
+	music.setVolume(10);
+	isPlaying = false;
 }
 Game::~Game()
 {
 }
+
+void Game::stopMusic()
+{
+	music.stop();
+	isPlaying = false;
+}
+
 // EVENTS
 int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 {
@@ -166,6 +186,7 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 				Score *scoreTable = new Score;
 				scoreTable->checkIfTop(score);
 				delete scoreTable;
+				stopMusic();
 				return 0;
 			}
 		}
@@ -330,7 +351,7 @@ bool Game::gameEngine()
 				{
 					sftime += sf::seconds(2);
 					isSwap = true;
-					sound.play();
+					gemSound.play();
 				}
 				else isSwap = false;
 				clicked = 0;
@@ -705,6 +726,7 @@ void Game::useSkill()
 		gem[x0][y0]->increaseMatch();
 		skill[0]->setQuantity(skill[0]->getQuantity() - 1);
 		isSkill = false;
+		hammerSound.play();
 	}
 	if (activeSkill == 1)
 	{
@@ -719,6 +741,7 @@ void Game::useSkill()
 			}
 			skill[1]->setQuantity(skill[1]->getQuantity() - 1);
 			isSkill = false;
+			boomSound.play();
 		}
 	}
 	if (activeSkill == 2)
@@ -736,6 +759,7 @@ void Game::useSkill()
 		}
 		skill[2]->setQuantity(skill[2]->getQuantity() - 1);
 		isSkill = false;
+		lightningSound.play();
 	}
 	if (activeSkill == 3)
 	{
@@ -745,6 +769,7 @@ void Game::useSkill()
 		}
 		skill[3]->setQuantity(skill[3]->getQuantity() - 1);
 		isSkill = false;
+		lavaSound.play();
 	}
 	if (activeSkill == 4)
 	{
@@ -754,6 +779,7 @@ void Game::useSkill()
 		}
 		skill[4]->setQuantity(skill[4]->getQuantity() - 1);
 		isSkill = false;
+		lavaSound.play();
 	}
 	
 
@@ -793,4 +819,6 @@ void Game::drawing(sf::RenderWindow &window)
 			fg_Gem[i][j]->drawFgGem(window);
 		}
 	}
+
+	if (!isPlaying) { music.play(); isPlaying = true; }
 }

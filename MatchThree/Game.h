@@ -44,6 +44,9 @@ private:
 	sf::Vector2i offset;
 	sf::Vector2i mousePosition;
 
+	sf::Music music;
+	bool isPlaying;
+
 	// METHODS
 	bool finishGame();
 	void swap(Gem *gem[][SIZE_Y], int x0, int y0, int x1, int y1);
@@ -56,9 +59,18 @@ private:
 	bool gameDone();
 	void skills();
 	void useSkill();
+	void stopMusic();
 
-	sf::Sound sound;
-	sf::SoundBuffer buffer;
+	sf::Sound gemSound;
+	sf::SoundBuffer gemBuffer;
+	sf::SoundBuffer hammerBuffer;
+	sf::SoundBuffer boomBuffer;
+	sf::SoundBuffer lightningBuffer;
+	sf::SoundBuffer lavaBuffer;
+	sf::Sound hammerSound;
+	sf::Sound boomSound;
+	sf::Sound lightningSound;
+	sf::Sound lavaSound;
 public:
 	Game();
 	~Game();
