@@ -741,7 +741,9 @@ bool Game::gameDone()
 	if (score > maxScore) saveScore << score;
 	else saveScore << maxScore;
 	saveScore.close();
-
+	Score *scoreTable = new Score;
+	scoreTable->checkIfTop(score);
+	delete scoreTable;
 	
 	return true;
 }
@@ -863,6 +865,6 @@ void Game::drawing(sf::RenderWindow &window)
 			fg_Gem[i][j]->drawFgGem(window);
 		}
 	}
-	if (start == false) about->drawAboutLvl(window);
+	if (start == false && game == true) about->drawAboutLvl(window);
 	if (!isPlaying) { music.play(); isPlaying = true; }
 }
