@@ -188,7 +188,7 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
-				prepareBoard(1);
+				prepareBoard(level);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
