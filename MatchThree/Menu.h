@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include "Windows.h"
 class Menu:public Windows

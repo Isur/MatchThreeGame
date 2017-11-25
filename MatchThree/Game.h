@@ -9,6 +9,7 @@
 #include "Skills.h"
 #include "Object.h"
 #include "Cursor.h"
+#include "AboutLvl.h"
 class Game:public Windows
 {
 private:
@@ -19,6 +20,7 @@ private:
 	bool game;
 	bool start;
 	bool done;
+	bool loading;
 	int clicked;
 	int score;
 	int oldScore[5];
@@ -40,6 +42,7 @@ private:
 	bgGem *bg_Gem[SIZE_X][SIZE_Y];
 	FgGem *fg_Gem[SIZE_X][SIZE_Y];
 	Skills *skill[5];
+	AboutLvl* about;
 
 	sf::Vector2i offset;
 	sf::Vector2i mousePosition;

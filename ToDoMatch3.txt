@@ -1,0 +1,26 @@
+TO DO LIST:
+	- profil gracza
+		- high score dla gracza (dla danego poziomu) i ogólny
+		- high score z menu = suma highscore z każdego poziomu dla danego gracza
+	- informacje o rozpoczętym poziomie 
+		- okienko z info
+			- high score
+			- co zrobić by przejść poziom
+	- stworzyć 20 poziomów
+	- animacje umiejętności
+	- dźwięki
+		- muzyczka w tle (jedna do menu, kilka do losowego wyboru na każdy poziom)
+		- poprawne przestawienie gemów
+		- umiejętności
+		- wygrana
+		- przegrana
+		- rozbijanie lodu
+		- rozbijanie "tła"
+		- click
+		- button hover
+	-
+	
+	
+	
+	
+	- dokumentacja

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "Score.h"
+#include "AboutLvl.h"
 #include <time.h>
 #include <string> 
 #include <stdlib.h>
@@ -57,123 +58,131 @@ void Game::stopMusic()
 // EVENTS
 int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 {
-	if (e.type == sf::Event::MouseMoved)
+	if (start == false)
 	{
-		if (isSkill == true) cursor->setTexture(activeSkill);
-		else cursor->setDefaultTexture();
+		start = about->events(e, window);
 	}
-	if (e.type == sf::Event::MouseButtonPressed)
+	else
 	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		if (e.type == sf::Event::MouseMoved)
 		{
-			for (i = 0; i < SIZE_X; i++)
+			if (isSkill == true) cursor->setTexture(activeSkill);
+			else cursor->setDefaultTexture();
+		}
+		if (e.type == sf::Event::MouseButtonPressed)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 			{
-				for (j = 0; j < SIZE_X; j++)
+				for (i = 0; i < SIZE_X; i++)
 				{
-					gem[i][j]->updateTextrue(false);
+					for (j = 0; j < SIZE_X; j++)
+					{
+						gem[i][j]->updateTextrue(false);
+					}
 				}
-			}
-			sf::Vector2i mp = sf::Mouse::getPosition(window);
-			if (mp.x <= offset.x + TILESIZE*SIZE_X &&
-				mp.y <= offset.y + TILESIZE*SIZE_Y &&
-				mp.x > offset.x &&
-				mp.y > offset.y)
-			{
-				mp -= offset;
-				
-				if (isSkill == true)
+				sf::Vector2i mp = sf::Mouse::getPosition(window);
+				if (mp.x <= offset.x + TILESIZE*SIZE_X &&
+					mp.y <= offset.y + TILESIZE*SIZE_Y &&
+					mp.x > offset.x &&
+					mp.y > offset.y)
 				{
-					cursor->setTexture(activeSkill);
-					x0 = mp.x / TILESIZE;
-					y0 = mp.y / TILESIZE;
+					mp -= offset;
 
-					if (activeSkill == 0)
+					if (isSkill == true)
 					{
-						gem[x0][y0]->updateTextrue(true);
-					}
-					else if (activeSkill == 1)
-					{
-						if (x0 > 0 && y0 > 0 && x0 < SIZE_X - 1 && y0 < SIZE_Y - 1)
+						cursor->setTexture(activeSkill);
+						x0 = mp.x / TILESIZE;
+						y0 = mp.y / TILESIZE;
+
+						if (activeSkill == 0)
 						{
-							for (int i = x0 - 1; i <= x0 + 1; i++)
+							gem[x0][y0]->updateTextrue(true);
+						}
+						else if (activeSkill == 1)
+						{
+							if (x0 > 0 && y0 > 0 && x0 < SIZE_X - 1 && y0 < SIZE_Y - 1)
 							{
-								for (int j = y0 - 1; j <= y0 + 1; j++)
+								for (int i = x0 - 1; i <= x0 + 1; i++)
 								{
-									gem[i][j]->updateTextrue(true);
+									for (int j = y0 - 1; j <= y0 + 1; j++)
+									{
+										gem[i][j]->updateTextrue(true);
+									}
 								}
 							}
 						}
-					}
-					else if (activeSkill == 2)
-					{
-						int temp = gem[x0][y0]->getType();
-						for (int i = 0; i < SIZE_X; i++)
+						else if (activeSkill == 2)
 						{
-							for (int j = 0; j < SIZE_Y; j++)
+							int temp = gem[x0][y0]->getType();
+							for (int i = 0; i < SIZE_X; i++)
 							{
-								if (gem[i][j]->getType() == temp)
+								for (int j = 0; j < SIZE_Y; j++)
 								{
-									gem[i][j]->updateTextrue(true);
+									if (gem[i][j]->getType() == temp)
+									{
+										gem[i][j]->updateTextrue(true);
+									}
 								}
 							}
 						}
-					}
-					else if (activeSkill == 3)
-					{
-						for (int i = 0; i < SIZE_Y; i++)
+						else if (activeSkill == 3)
 						{
-							gem[x0][i]->updateTextrue(true);
+							for (int i = 0; i < SIZE_Y; i++)
+							{
+								gem[x0][i]->updateTextrue(true);
+							}
+						}
+						else if (activeSkill == 4)
+						{
+							for (int i = 0; i < SIZE_X; i++)
+							{
+								gem[i][y0]->updateTextrue(true);
+							}
 						}
 					}
-					else if (activeSkill == 4)
+					else
 					{
-						for (int i = 0; i < SIZE_X; i++)
-						{
-							gem[i][y0]->updateTextrue(true);
-						}
+						cursor->setDefaultTexture();
 					}
 				}
 				else
 				{
 					cursor->setDefaultTexture();
+					isSkill = false;
 				}
 			}
-			else
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				cursor->setDefaultTexture();
-				isSkill = false;
-			}
-		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			mousePosition = sf::Mouse::getPosition(window);
-			for (int i = 0; i < 5; i++)
-			{
-				if (mousePosition.y > OFFSET_Y + SIZE_Y*TILESIZE + 10 && mousePosition.y < OFFSET_Y + SIZE_Y*TILESIZE + 10 + TILESIZE)
+				mousePosition = sf::Mouse::getPosition(window);
+				for (int i = 0; i < 5; i++)
 				{
-					if (mousePosition.x > OFFSET_X + 2 * i*TILESIZE && mousePosition.x < OFFSET_X + 2 * i*TILESIZE + TILESIZE)
+					if (mousePosition.y > OFFSET_Y + SIZE_Y*TILESIZE + 10 && mousePosition.y < OFFSET_Y + SIZE_Y*TILESIZE + 10 + TILESIZE)
 					{
-						if (skill[i]->getQuantity() > 0 && start == true)
+						if (mousePosition.x > OFFSET_X + 2 * i*TILESIZE && mousePosition.x < OFFSET_X + 2 * i*TILESIZE + TILESIZE)
 						{
-							activeSkill = i;
-							isSkill = true;
+							if (skill[i]->getQuantity() > 0 && start == true)
+							{
+								activeSkill = i;
+								isSkill = true;
+							}
+							break;
 						}
-						break;
 					}
 				}
-			}
-			if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
-				mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
-				mousePosition.x > offset.x &&
-				mousePosition.y > offset.y)
-			{
-				if (isMoving == false)
+				if (mousePosition.x <= offset.x + TILESIZE*SIZE_X &&
+					mousePosition.y <= offset.y + TILESIZE*SIZE_Y &&
+					mousePosition.x > offset.x &&
+					mousePosition.y > offset.y)
 				{
-					clicked++;
+					if (isMoving == false)
+					{
+						clicked++;
+					}
+					mousePosition -= offset;
 				}
-				mousePosition -= offset;
 			}
-		}
+	}
+	
 	}
 	if (e.type == sf::Event::KeyPressed)
 		{
@@ -204,6 +213,7 @@ void Game::prepareBoard(int level)
 	isSwap = true;
 	isMatch = false;
 	start = false;
+	loading = false;
 	done = false;
 	game = true;
 	isSkill = false;
@@ -285,12 +295,13 @@ void Game::prepareBoard(int level)
 			fg_Gem[i][j]->setAlpha(0);
 		}
 	}	
+	about = new AboutLvl(levelType, level);
 	sftime = sf::seconds(60);
 }
 //ENGINE
 bool Game::gameEngine()
 {
-	if (start == false)
+	if (start == false || loading == false)
 	{
 		for (i = 0; i < SIZE_X; i++)
 		{
@@ -301,11 +312,17 @@ bool Game::gameEngine()
 					gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
 					bg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
 					fg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() +5);
+					loading = true;
 				}
 			}
 		}
 	}
-	if (start == true) sftime -= clock.getElapsedTime();
+	
+	if (start == true)
+	{
+		sftime -= clock.getElapsedTime();
+		//delete about;
+	}
 	if (mousePosition.x <= TILESIZE*SIZE_X &&
 		mousePosition.y <= TILESIZE*SIZE_Y &&
 		mousePosition.x > 0 &&
@@ -340,7 +357,6 @@ bool Game::gameEngine()
 		}
 		else if (clicked == 2 && isMoving == false)
 		{
-			start = true;
 			x1 = mousePosition.x / TILESIZE;
 			y1 = mousePosition.y / TILESIZE;
 
@@ -654,7 +670,7 @@ bool Game::gameDone()
 {
 	if (levelType == "points")
 	{
-		if (score < 2500) return false;
+		if (score < 2500*level) return false;
 	}
 	else if (levelType == "ice")
 	{
@@ -819,6 +835,6 @@ void Game::drawing(sf::RenderWindow &window)
 			fg_Gem[i][j]->drawFgGem(window);
 		}
 	}
-
+	if (start == false) about->drawAboutLvl(window);
 	if (!isPlaying) { music.play(); isPlaying = true; }
 }

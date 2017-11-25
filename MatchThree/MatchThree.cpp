@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include <SFML/Graphics.hpp>
+#include <SFML\Graphics.hpp>
 #include "Gem.h"
 #include "bgGem.h"
 #include "Game.h"
