@@ -499,6 +499,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -515,6 +523,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -2197,7 +2221,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Match3"
         "ProductCode" = "8:{9D3C40A3-D86E-4E91-B34C-F484AF910CDA}"
-        "PackageCode" = "8:{1E300B53-441D-4D7C-B6CD-9C0225BBAB4B}"
+        "PackageCode" = "8:{70B8C06D-C671-47D4-BAE6-AEAF5440E5F7}"
         "UpgradeCode" = "8:{0BBFFE06-852E-47A3-89AA-6D60E38402A2}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -2205,12 +2229,12 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
+        "Manufacturer" = "8:Isur"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Match3"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:Isur"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"

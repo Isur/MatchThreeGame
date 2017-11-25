@@ -298,7 +298,7 @@ void Game::prepareBoard(int level)
 	}	
 	about = new AboutLvl(levelType, level);
 	loading = false;
-	
+	sftime = sf::seconds(60);
 }
 //ENGINE
 bool Game::gameEngine()
@@ -316,16 +316,20 @@ bool Game::gameEngine()
 					fg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() +5);
 					
 				}
-				else loading = true;
+				else
+				{
+					loading = true;
+					
+				}
 			}
 		}
-		sftime = sf::seconds(60);
+		
 	}
-	
-	if (start == true && loading == true)
+	std::cout << "status: " << start << " & " << std::to_string(sftime.asSeconds()) << std::endl;
+	if (loading == true)
 	{
-		sftime -= clock.getElapsedTime();
 
+		if (clock.getElapsedTime() < sf::seconds(1)) sftime -= clock.getElapsedTime();
 		if (mousePosition.x <= TILESIZE*SIZE_X &&
 			mousePosition.y <= TILESIZE*SIZE_Y &&
 			mousePosition.x > 0 &&
@@ -384,6 +388,7 @@ bool Game::gameEngine()
 				}
 			}
 		}
+
 		isMatch = false;
 		isMatch = match(gem, bg_Gem);
 		if (isMatch == true && start == true)
@@ -391,7 +396,7 @@ bool Game::gameEngine()
 			sftime += sf::seconds(1);
 		}
 		isMoving = false;
-		if (isMoving == false)
+		if (isMoving == false && start == true)
 		{
 			isMoving = deleteAnimation(gem);
 		}
@@ -400,7 +405,7 @@ bool Game::gameEngine()
 			swap(gem, x0, y0, x1, y1);
 			isSwap = true;
 		}
-		if (isMoving == false && done == false)
+		if (isMoving == false && done == false && start == true)
 		{
 			updateGrid(gem);
 			skills();
@@ -430,9 +435,12 @@ bool Game::gameEngine()
 		}
 
 		setTexts();
+
 		clock.restart();
+
+		return finishGame();
 	}
-	return finishGame();
+	
 }
 bool Game::finishGame()
 {
