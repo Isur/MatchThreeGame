@@ -296,6 +296,10 @@ void Game::prepareBoard(int level)
 			fg_Gem[i][j]->setAlpha(0);
 		}
 	}	
+	for (int i = 0; i < 5; i++)
+	{
+		oldScore[i] = 0;
+	}
 	about = new AboutLvl(levelType, level);
 	loading = false;
 	sftime = sf::seconds(60);
@@ -329,7 +333,7 @@ bool Game::gameEngine()
 	if (loading == true)
 	{
 
-		if (clock.getElapsedTime() < sf::seconds(1)) sftime -= clock.getElapsedTime();
+		if(start == true) if (clock.getElapsedTime() < sf::seconds(1)) sftime -= clock.getElapsedTime();
 		if (mousePosition.x <= TILESIZE*SIZE_X &&
 			mousePosition.y <= TILESIZE*SIZE_Y &&
 			mousePosition.x > 0 &&
