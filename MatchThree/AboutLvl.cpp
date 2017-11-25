@@ -25,7 +25,7 @@ AboutLvl::AboutLvl(std::string lvlType, int level)
 	if (lvlType == "points") goalText.setString("You have to earn\n " + std::to_string(level*2500) + " points");
 	else if (lvlType == "ice") goalText.setString("You have to destroy\n all ice on map!");
 	else if (lvlType == "background") goalText.setString("You have to destroy\n everything under\ngems");
-
+	else if (lvlType == "all") goalText.setString("You have to destroy\neverything on map!");
 	
 	lvlText.setFont(myFont);
 	lvlText.setPosition(sf::Vector2f(110.0, 100.0));
@@ -61,6 +61,7 @@ int AboutLvl::events(sf::Event e, sf::RenderWindow & window)
 			if (e.type == sf::Event::MouseButtonPressed)
 			{
 				clickSound.play();
+				delete this;
 				return 1;
 			}
 		}

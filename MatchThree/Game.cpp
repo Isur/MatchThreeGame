@@ -196,6 +196,7 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 				scoreTable->checkIfTop(score);
 				delete scoreTable;
 				stopMusic();
+				
 				return 0;
 			}
 		}
@@ -204,6 +205,8 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 // LOAD GAME
 void Game::prepareBoard(int level)
 {
+	
+
 	int i, j, tempType;	
 	this->level = level;
 	srand((unsigned int)time(NULL));
@@ -240,8 +243,8 @@ void Game::prepareBoard(int level)
 	// LOAD LEVEL
 	std::ifstream fileLevel;
 	std::string levelString("levels/");
-	if(this->level <= 4) levelString.append(std::to_string(this->level));	
-	else levelString.append("4");
+	if(this->level <= 20) levelString.append(std::to_string(this->level));	
+	else levelString.append("20");
 	levelString.append(".egg");
 	fileLevel.open(levelString);
 	char levelChar[SIZE_X][SIZE_Y];
@@ -268,7 +271,7 @@ void Game::prepareBoard(int level)
 			tempType = rand() % TYPES;
 			position.x = (float) offset.x + i*TILESIZE;
 			position.y = (float) offset.y + j*TILESIZE;
-			
+
 			gem[i][j] = new Gem(position, tempType);
 			switch (levelChar[i][j])
 			{
@@ -312,123 +315,123 @@ bool Game::gameEngine()
 					gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
 					bg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() + 5);
 					fg_Gem[i][j]->setAlpha(gem[i][j]->getAlpha() +5);
-					loading = true;
+					
 				}
+				else loading = true;
 			}
 		}
 	}
 	
-	if (start == true)
+	if (start == true && loading == true)
 	{
 		sftime -= clock.getElapsedTime();
-		//delete about;
-	}
-	if (mousePosition.x <= TILESIZE*SIZE_X &&
-		mousePosition.y <= TILESIZE*SIZE_Y &&
-		mousePosition.x > 0 &&
-		mousePosition.y > 0)
-	{
-		if (isSkill == true)
+
+		if (mousePosition.x <= TILESIZE*SIZE_X &&
+			mousePosition.y <= TILESIZE*SIZE_Y &&
+			mousePosition.x > 0 &&
+			mousePosition.y > 0)
 		{
-			x0 = mousePosition.x / TILESIZE;
-			y0 = mousePosition.y / TILESIZE;
-			useSkill();
-			clicked = 0;
+			if (isSkill == true)
+			{
+				x0 = mousePosition.x / TILESIZE;
+				y0 = mousePosition.y / TILESIZE;
+				useSkill();
+				clicked = 0;
+				for (i = 0; i < SIZE_X; i++)
+				{
+					for (j = 0; j < SIZE_X; j++)
+					{
+						gem[i][j]->updateTextrue(false);
+					}
+				}
+			}
+			else if (clicked == 1 && game == true && isMoving == false)
+			{
+				x0 = mousePosition.x / TILESIZE;
+				y0 = mousePosition.y / TILESIZE;
+				if (fg_Gem[x0][y0]->getLevel() > 0 || gem[x0][y0]->getType() == TYPES)
+				{
+					clicked = 0;
+				}
+				else
+				{
+					gem[x0][y0]->updateTextrue(true);
+				}
+			}
+			else if (clicked == 2 && isMoving == false)
+			{
+				x1 = mousePosition.x / TILESIZE;
+				y1 = mousePosition.y / TILESIZE;
+
+				if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
+				{
+					swap(gem, x0, y0, x1, y1);
+					if (match(gem, bg_Gem) == true)
+					{
+						sftime += sf::seconds(2);
+						isSwap = true;
+						gemSound.play();
+					}
+					else isSwap = false;
+					clicked = 0;
+					gem[x0][y0]->updateTextrue(false);
+					gem[x1][y1]->updateTextrue(false);
+				}
+				else
+				{
+					gem[x0][y0]->updateTextrue(false);
+					clicked = 1;
+				}
+			}
+		}
+		isMatch = false;
+		isMatch = match(gem, bg_Gem);
+		if (isMatch == true && start == true)
+		{
+			sftime += sf::seconds(1);
+		}
+		isMoving = false;
+		if (isMoving == false)
+		{
+			isMoving = deleteAnimation(gem);
+		}
+		if (isSwap == false && isMoving == false)
+		{
+			swap(gem, x0, y0, x1, y1);
+			isSwap = true;
+		}
+		if (isMoving == false && done == false)
+		{
+			updateGrid(gem);
+			skills();
+		}
+		else if (done == true)
+		{
 			for (i = 0; i < SIZE_X; i++)
 			{
-				for (j = 0; j < SIZE_X; j++)
+				for (j = 0; j < SIZE_Y; j++)
 				{
-					gem[i][j]->updateTextrue(false);
+					if (gem[i][j]->getAlpha() > 5)
+					{
+						gem[i][j]->setAlpha(gem[i][j]->getAlpha() - 5);
+						isMoving = true;
+					}
 				}
 			}
-		}
-		else if (clicked == 1 && game == true && isMoving == false)
-		{
-			x0 = mousePosition.x / TILESIZE;
-			y0 = mousePosition.y / TILESIZE;
-			if (fg_Gem[x0][y0]->getLevel() > 0 || gem[x0][y0]->getType() == TYPES)
+			if (gem[SIZE_X - 1][SIZE_Y - 1]->getAlpha() <= 10)
 			{
-				clicked = 0;
-			}
-			else
-			{
-				gem[x0][y0]->updateTextrue(true);
+				this->level++;
+				prepareBoard(level);
 			}
 		}
-		else if (clicked == 2 && isMoving == false)
+		if (isMoving == false)
 		{
-			x1 = mousePosition.x / TILESIZE;
-			y1 = mousePosition.y / TILESIZE;
+			checkMoves();
+		}
 
-			if (abs(x0 - x1) + abs(y0 - y1) == 1 && fg_Gem[x1][y1]->getLevel() == 0 && gem[x1][y1]->getType() != TYPES)
-			{
-				swap(gem, x0, y0, x1, y1);
-				if (match(gem, bg_Gem) == true)
-				{
-					sftime += sf::seconds(2);
-					isSwap = true;
-					gemSound.play();
-				}
-				else isSwap = false;
-				clicked = 0;
-				gem[x0][y0]->updateTextrue(false);
-				gem[x1][y1]->updateTextrue(false);
-			}
-			else
-			{
-				gem[x0][y0]->updateTextrue(false);
-				clicked = 1;
-			}
-		}
+		setTexts();
+		clock.restart();
 	}
-	isMatch = false;
-	isMatch = match(gem, bg_Gem);
-	if (isMatch == true && start == true)
-	{
-		sftime += sf::seconds(1);
-	}
-	isMoving = false;
-	if (isMoving == false)
-	{
-		isMoving = deleteAnimation(gem);
-	}
-	if (isSwap == false && isMoving == false)
-	{
-		swap(gem, x0, y0, x1, y1);
-		isSwap = true;
-	}
-	if (isMoving == false && done == false)
-	{
-		updateGrid(gem);
-		skills();
-	}
-	else if (done == true)
-	{
-		for (i = 0; i < SIZE_X; i++)
-		{
-			for (j = 0; j < SIZE_Y; j++)
-			{
-				if (gem[i][j]->getAlpha() > 5)
-				{
-					gem[i][j]->setAlpha(gem[i][j]->getAlpha() - 5);
-					isMoving = true;
-				}
-			}
-		}
-		if (gem[SIZE_X - 1][SIZE_Y - 1]->getAlpha() <= 10)
-		{
-			this->level++;
-			prepareBoard(level);
-		}
-	}
-	if (isMoving == false)
-	{
-		checkMoves();
-	}
-
-	setTexts();
-	clock.restart();
-
 	return finishGame();
 }
 bool Game::finishGame()
@@ -698,6 +701,19 @@ bool Game::gameDone()
 			}
 		}
 	}
+	else if (levelType == "all")
+	{
+		for (int i = 0; i < SIZE_X; i++)
+		{
+			for (int j = 0; j < SIZE_Y; j++)
+			{
+				if (bg_Gem[i][j]->getLevel() > 0  || fg_Gem[i][j]->getLevel() > 0)
+				{
+					return false;
+				}
+			}
+		}
+	}
 	
 	// SAVE SCORE / LEVEL
 	std::ofstream save;
@@ -713,8 +729,8 @@ bool Game::gameDone()
 	if (score > maxScore) saveScore << score;
 	else saveScore << maxScore;
 	saveScore.close();
-	
 
+	
 	return true;
 }
 void Game::skills()

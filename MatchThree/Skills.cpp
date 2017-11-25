@@ -5,7 +5,7 @@
 Skills::Skills(int type)
 	:Object(type)
 {
-	quantity = 1;
+	quantity = 0;
 	font.loadFromFile("font.ttf");
 	text.setFont(font);
 	
