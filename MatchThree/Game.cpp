@@ -205,8 +205,6 @@ int Game::events(sf::Event e, sf::RenderWindow &window, Cursor *cursor)
 // LOAD GAME
 void Game::prepareBoard(int level)
 {
-	
-
 	int i, j, tempType;	
 	this->level = level;
 	srand((unsigned int)time(NULL));
@@ -299,7 +297,8 @@ void Game::prepareBoard(int level)
 		}
 	}	
 	about = new AboutLvl(levelType, level);
-	sftime = sf::seconds(60);
+	loading = false;
+	
 }
 //ENGINE
 bool Game::gameEngine()
@@ -320,6 +319,7 @@ bool Game::gameEngine()
 				else loading = true;
 			}
 		}
+		sftime = sf::seconds(60);
 	}
 	
 	if (start == true && loading == true)
