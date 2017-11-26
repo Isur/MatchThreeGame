@@ -398,6 +398,7 @@ bool Game::gameEngine()
 		if (isMatch == true && start == true)
 		{
 			sftime += sf::seconds(1);
+			gemSound.play();
 		}
 		isMoving = false;
 		if (isMoving == false && start == true)
