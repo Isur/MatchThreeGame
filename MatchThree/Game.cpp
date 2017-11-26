@@ -442,8 +442,8 @@ bool Game::gameEngine()
 
 		clock.restart();
 
-		return finishGame();
 	}
+		return finishGame();
 	
 }
 bool Game::finishGame()

@@ -169,6 +169,7 @@
     <ClInclude Include="MatchThree.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="Skills.h" />
@@ -200,6 +201,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MatchThree.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

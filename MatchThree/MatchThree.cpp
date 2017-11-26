@@ -13,13 +13,16 @@
 #include "MatchThree.h"
 #include "Map.h"
 #include "settings.h"
-
+#include "resource.h"
 int main()
 {
 	// SETTINGS
 	sf::RenderWindow window(sf::VideoMode(550, 700), "Match 3 Game", sf::Style::Close);
 	window.setMouseCursorVisible(false);
 	window.setFramerateLimit(60);
+	sf::Image icon;
+	icon.loadFromFile("images/icon.png");
+	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 	Menu *menu = new Menu;
 	Game *game = new Game;
 	Score *score = new Score;
