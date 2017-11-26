@@ -11,6 +11,9 @@ private:
 
 	sf::SoundBuffer clickBuffer;
 	sf::Sound clickSound;
+	sf::SoundBuffer hoverBuffer;
+	sf::Sound hoverSound;
+	bool isButtonHovered;
 
 	void Help::updateImage(bool clicked);
 public:

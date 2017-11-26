@@ -42,7 +42,7 @@ Game::Game()
 
 	music.openFromFile("sounds/level_music.wav");
 	music.setLoop(true);
-	music.setVolume(10);
+	music.setVolume(20);
 	isPlaying = false;
 }
 Game::~Game()
@@ -456,6 +456,8 @@ bool Game::finishGame()
 		Score *scoreTable = new Score;
 		scoreTable->checkIfTop(score);
 		delete scoreTable;
+		music.stop();
+		isPlaying = false;
 	}
 	else game = true;
 	return game;
@@ -866,5 +868,5 @@ void Game::drawing(sf::RenderWindow &window)
 		}
 	}
 	if (start == false && game == true) about->drawAboutLvl(window);
-	if (!isPlaying) { music.play(); isPlaying = true; }
+	if (!isPlaying && game) { music.play(); isPlaying = true; }
 }

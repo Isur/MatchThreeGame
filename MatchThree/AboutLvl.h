@@ -10,6 +10,9 @@ class AboutLvl:public Windows
 
 	sf::SoundBuffer clickBuffer;
 	sf::Sound clickSound;
+	sf::SoundBuffer hoverBuffer;
+	sf::Sound hoverSound;
+	bool isHovered;
 
 	sf::Font myFont;
 	sf::Text goalText;

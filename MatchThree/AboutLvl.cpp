@@ -18,6 +18,9 @@ AboutLvl::AboutLvl(std::string lvlType, int level)
 
 	clickBuffer.loadFromFile("sounds/click.wav");
 	clickSound.setBuffer(clickBuffer);
+	hoverBuffer.loadFromFile("sounds/hover.wav");
+	hoverSound.setBuffer(hoverBuffer);
+	isHovered = false;
 
 	myFont.loadFromFile("font.ttf");
 	
@@ -58,6 +61,7 @@ int AboutLvl::events(sf::Event e, sf::RenderWindow & window)
 		if (mousePosition.x >= 125 && mousePosition.x <= 425)
 		{
 			updateImage(true);
+			if (!isHovered) { hoverSound.play(); isHovered = true; }
 			if (e.type == sf::Event::MouseButtonPressed)
 			{
 				clickSound.play();
@@ -65,9 +69,15 @@ int AboutLvl::events(sf::Event e, sf::RenderWindow & window)
 				return 1;
 			}
 		}
-		else updateImage(false);
+		else {
+			updateImage(false);
+			isHovered = false;
+		}
 	}
-	else updateImage(false);
+	else {
+		updateImage(false);
+		isHovered = false;
+	}
 	return 0;
 }
 

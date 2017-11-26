@@ -14,6 +14,9 @@ Help::Help()
 
 	clickBuffer.loadFromFile("sounds/click.wav");
 	clickSound.setBuffer(clickBuffer);
+	hoverBuffer.loadFromFile("sounds/hover.wav");
+	hoverSound.setBuffer(hoverBuffer);
+	isButtonHovered = false;
 }
 
 
@@ -39,15 +42,18 @@ int Help::events(sf::Event e, sf::RenderWindow &window)
 		if (mousePosition.y >= 580 && mousePosition.y <= 580 + 100)
 		{
 			updateImage(true);
+			if (!isButtonHovered) { hoverSound.play(); isButtonHovered = true; }
 		}
 		else
 		{
 			updateImage(false);
+			isButtonHovered = false;
 		}
 	}
 	else
 	{
 		updateImage(false);
+		isButtonHovered = false;
 	}
 
 	if (e.type == sf::Event::MouseButtonPressed)
